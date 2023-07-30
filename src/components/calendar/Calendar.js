@@ -7,6 +7,7 @@ import DealsTable from "../deals/DealsTable";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import SwitchButton from "../buttons/SwitchButton";
+import { UploadForm } from "../form/UploadForm";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   getDayDealsLength,
@@ -304,7 +305,16 @@ const Calendar = () => {
   // }
   return (
     <div style={{ width: "max-content", margin: "auto" }}>
-      <h1>Custom Calendar</h1>
+      <div
+        style={{
+          display: "flex",
+          gap: "2rem",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1>Forex Calendar</h1> <UploadForm />
+      </div>
       {showModal && (
         <Modal setShowModal={setShowModal}>
           <DealsTable dealsInfo={dealsInfo} />
@@ -361,7 +371,14 @@ const Calendar = () => {
           <span>Return $ for the Month</span>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            width: "300px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <span>Week Days</span>
           <SwitchButton on={switchOn} onClick={handleSwitchToggle} />
           <span>Bussiness Days</span>

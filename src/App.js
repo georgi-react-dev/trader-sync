@@ -30,7 +30,6 @@ function App() {
 
   return (
     <div className="App">
-      <UploadForm onUpload={(obj) => getData(obj)} />
       <Calendar />
       {/* {data && <DealsTable dealsInfo={data} />} */}
     </div>

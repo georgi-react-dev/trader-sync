@@ -1,5 +1,17 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+import { styled } from "styled-components";
+
+const UploadButton = styled.button`
+  background: #123456;
+  color: #fff;
+  outline: 0;
+  border: 0.5px solid #ffffff4a;
+  padding: 10px;
+  /* font-size: 1.05rem; */
+  cursor: pointer;
+`;
+
 export const UploadForm = ({ onUpload }) => {
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -100,20 +112,14 @@ export const UploadForm = ({ onUpload }) => {
   };
 
   return (
-    <div
-      style={{
-        margin: "auto",
-        marginBottom: "2rem",
-        width: "500px",
-      }}
-    >
+    <>
       <input
         type="file"
         ref={fileInputRef}
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      <button onClick={handleButtonClick}>Upload File</button>
-    </div>
+      <UploadButton onClick={handleButtonClick}>Upload File</UploadButton>
+    </>
   );
 };
