@@ -46,7 +46,7 @@ export const getDayDealsInfo = (currentDay, data) => {
   return finalArr;
 };
 
-export const getWeekDays = () => {
+export const getWeekDays = (isBussinessDays) => {
   const daysOfWeek = [
     "Sunday",
     "Monday",
@@ -56,8 +56,15 @@ export const getWeekDays = () => {
     "Friday",
     "Saturday",
   ];
-
-  const days = daysOfWeek.map((day) => (
+  const bussinessDays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+  ];
+  let daysToShow = isBussinessDays ? bussinessDays : daysOfWeek;
+  const days = daysToShow.map((day) => (
     <div className="test" style={{ color: "#fff", width: "150px" }} key={day}>
       {day}
     </div>

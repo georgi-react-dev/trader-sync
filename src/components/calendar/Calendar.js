@@ -6,7 +6,7 @@ import format from "date-fns/format";
 import DealsTable from "../deals/DealsTable";
 import axios from "axios";
 import DatePicker from "react-datepicker";
-
+import SwitchButton from "../buttons/SwitchButton";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   getDayDealsLength,
@@ -67,11 +67,18 @@ const Calendar = () => {
   console.log({ selectedDateSr: selectedDate });
   const [showModal, setShowModal] = useState(false);
   const [dealsInfo, setDealsInfo] = useState(null);
+  const [isBussinessDays, setIsBussinessDays] = useState(false);
   const getDayContainerBackground = (profit) => {
     if (!profit) return "";
     return profit >= 0 ? " profit" : " loss";
   };
+  const [switchOn, setSwitchOn] = useState(false);
 
+  const handleSwitchToggle = (e) => {
+    console.log({ e });
+    setSwitchOn((prev) => !prev);
+    setIsBussinessDays(e.target.checked);
+  };
   // Function to handle date selection
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -84,6 +91,7 @@ const Calendar = () => {
     const year = selectedDate.getFullYear();
 
     // Get the number of days in the selected month
+    // Get the number of days in the selected month
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     // Get the index of the first day of the month
@@ -93,8 +101,6 @@ const Calendar = () => {
     console.log({ firstDayIndex });
     // Create an array of empty grid cells before the first day
     const emptyCells = Array(firstDayIndex).fill(null);
-
-    // Create an array of grid cells for each day in the month
     const calendarCells = [
       ...emptyCells,
       ...Array(daysInMonth)
@@ -102,7 +108,10 @@ const Calendar = () => {
         .map((_, index) => index + 1),
     ];
 
-    const cells = calendarCells.map((day, index) => {
+    const businessDays = getBusinessDays(year, month);
+    console.log({ businessDays });
+    let dataArr = isBussinessDays ? businessDays : calendarCells;
+    const cells = dataArr.map((day, index) => {
       const profit = getDayDealsProfit(
         format(new Date(year, month, day), "yyyy.MM.dd"),
         data
@@ -168,12 +177,25 @@ const Calendar = () => {
 
     return (
       <>
-        {getWeekDays()}
+        {getWeekDays(isBussinessDays)}
         {cells}
       </>
     );
   };
+  const getBusinessDays = (year, month) => {
+    const businessDays = [];
+    const date = new Date(year, month, 1);
 
+    while (date.getMonth() === month) {
+      const dayOfWeek = date.getDay();
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        businessDays.push(new Date(date).getDate());
+      }
+      date.setDate(date.getDate() + 1);
+    }
+
+    return businessDays;
+  };
   useEffect(() => {
     const fetchData = async () => {
       // Replace 'your_api_endpoint' with the actual API endpoint
@@ -338,6 +360,12 @@ const Calendar = () => {
           </h2>
           <span>Return $ for the Month</span>
         </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Week Days</span>
+          <SwitchButton on={switchOn} onClick={handleSwitchToggle} />
+          <span>Bussiness Days</span>
+        </div>
       </div>
       {selectedDate && (
         <div
@@ -354,7 +382,9 @@ const Calendar = () => {
               display: "grid",
               flexWrap: "wrap",
 
-              gridTemplateColumns: "repeat(7, 100px)",
+              gridTemplateColumns: `repeat(${
+                isBussinessDays ? "5" : "7"
+              }, 100px)`,
               gap: "10px",
               justifyContent: "center",
             }}
