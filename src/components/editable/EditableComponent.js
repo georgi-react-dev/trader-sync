@@ -37,7 +37,7 @@ function EditableComponent({ apiUrl, initialContent, positionId }) {
         ) : (
           <pre>
             <div
-              onDoubleClick={() => setShowInputEle(true)}
+              onClick={() => setShowInputEle(true)}
               style={{
                 display: "inline-block",
                 textAlign: "left",

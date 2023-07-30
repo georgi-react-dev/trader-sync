@@ -18,6 +18,7 @@ const TableContainer = styled.div`
     width: 100%;
   }
   background: #252b3d;
+  overflow: auto;
   tr {
     border-bottom: 1px solid #fff;
   }
