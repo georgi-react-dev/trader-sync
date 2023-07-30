@@ -65,7 +65,9 @@ export const UploadForm = ({ onUpload }) => {
           });
         }
         axios
-          .post("http://localhost:3005/saveTrades", { tradesData: profitArr })
+          .post("https://doubtful-fawn-baseball-cap.cyclic.app/saveTrades", {
+            tradesData: profitArr,
+          })
           .then((response) => {
             console.log("Response from server:", response.data);
           })

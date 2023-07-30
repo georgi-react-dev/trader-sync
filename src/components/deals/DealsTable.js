@@ -62,7 +62,7 @@ function DealsTable({ dealsInfo }) {
   //     const results = await Promise.all(
   //       dealsInfo.map(async (item) => {
   //         // Replace 'your_api_endpoint' with the actual API endpoint
-  //         const response = await axios.get("http://localhost:3005/getData", {
+  //         const response = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getData", {
   //           params: {
   //             positionID: item.position,
   //           },
@@ -80,7 +80,7 @@ function DealsTable({ dealsInfo }) {
   //     console.log({ results });
   //     setDealsData(results);
   //     // const deals = dealsInfo.map(async (item) => {
-  //     //   const res = await axios.get("http://localhost:3005/getImage", {
+  //     //   const res = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getImage", {
   //     //     params: {
   //     //       positionID: item.position,
   //     //     },
@@ -121,7 +121,7 @@ function DealsTable({ dealsInfo }) {
       formData.append("positionID", positionID);
 
       axios
-        .post("http://localhost:3005/save", formData, {
+        .post("https://doubtful-fawn-baseball-cap.cyclic.app/save", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -145,7 +145,7 @@ function DealsTable({ dealsInfo }) {
           //     dealsInfo.map(async (item) => {
           //       // Replace 'your_api_endpoint' with the actual API endpoint
           //       const response = await axios.get(
-          //         "http://localhost:3005/getImage",
+          //         "https://doubtful-fawn-baseball-cap.cyclic.app/getImage",
           //         {
           //           params: {
           //             positionID: item.position,
@@ -159,7 +159,7 @@ function DealsTable({ dealsInfo }) {
           //   console.log({ results });
           //   setDealsData(results);
           //   // const deals = dealsInfo.map(async (item) => {
-          //   //   const res = await axios.get("http://localhost:3005/getImage", {
+          //   //   const res = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getImage", {
           //   //     params: {
           //   //       positionID: item.position,
           //   //     },
@@ -182,11 +182,14 @@ function DealsTable({ dealsInfo }) {
   const showImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get("http://localhost:3005/getImage", {
-      params: {
-        positionID: positionID,
-      },
-    });
+    const res = await axios.get(
+      "https://doubtful-fawn-baseball-cap.cyclic.app/getImage",
+      {
+        params: {
+          positionID: positionID,
+        },
+      }
+    );
 
     console.log({ res: res.data.filename });
     setCurrentImage(res.data.image_path);
@@ -196,11 +199,14 @@ function DealsTable({ dealsInfo }) {
   const removeImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get("http://localhost:3005/removeImage", {
-      params: {
-        positionID: positionID,
-      },
-    });
+    const res = await axios.get(
+      "https://doubtful-fawn-baseball-cap.cyclic.app/removeImage",
+      {
+        params: {
+          positionID: positionID,
+        },
+      }
+    );
   };
 
   const showZoomedImage = (url) => {
@@ -260,13 +266,15 @@ function DealsTable({ dealsInfo }) {
                       <>
                         <img
                           src={
-                            "http://localhost:3005/uploads/" + item.image_path
+                            "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" +
+                            item.image_path
                           }
                           alt={"img"}
                           style={{ height: "30px" }}
                           onClick={() =>
                             showZoomedImage(
-                              "http://localhost:3005/uploads/" + item.image_path
+                              "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" +
+                                item.image_path
                             )
                           }
                         />
@@ -287,7 +295,8 @@ function DealsTable({ dealsInfo }) {
                       <>
                         <img
                           src={
-                            "http://localhost:3005/uploads/" + item.image_path
+                            "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" +
+                            item.image_path
                           }
                           alt={"img"}
                           style={{ height: "30px" }}
@@ -308,7 +317,9 @@ function DealsTable({ dealsInfo }) {
                 </td>
                 <td>
                   <EditableComponent
-                    apiUrl={"http://localhost:3005/updateDescription"}
+                    apiUrl={
+                      "https://doubtful-fawn-baseball-cap.cyclic.app/updateDescription"
+                    }
                     initialContent={item.description}
                     positionId={item.position_id}
                   />
