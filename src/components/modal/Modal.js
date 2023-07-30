@@ -23,8 +23,8 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  width: 95vw;
-  min-height: 300px;
+  width: 95%;
+  // min-height: 300px;
 `;
 const ModalHeader = styled.div`
   text-align: right;
