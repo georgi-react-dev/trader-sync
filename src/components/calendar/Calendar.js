@@ -201,7 +201,7 @@ const Calendar = () => {
     const fetchData = async () => {
       // Replace 'your_api_endpoint' with the actual API endpoint
       const response = await axios.get(
-        "https://doubtful-fawn-baseball-cap.cyclic.app/getTrades",
+        `${process.env.REACT_APP_API_ENDPOINT}/getTrades`,
         {
           params: {
             year_month_date: `${selectedDate.getFullYear()}.${
@@ -304,7 +304,7 @@ const Calendar = () => {
   //   return weeklySums;
   // }
   return (
-    <div style={{ width: "max-content", margin: "auto" }}>
+    <div style={{ width: "800px", margin: "auto" }}>
       <div
         style={{
           display: "flex",

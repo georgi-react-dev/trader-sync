@@ -63,7 +63,7 @@ function DealsTable({ dealsInfo }) {
   //     const results = await Promise.all(
   //       dealsInfo.map(async (item) => {
   //         // Replace 'your_api_endpoint' with the actual API endpoint
-  //         const response = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getData", {
+  //         const response = await axios.get("${process.env.API_ENDPOINT}/getData", {
   //           params: {
   //             positionID: item.position,
   //           },
@@ -81,7 +81,7 @@ function DealsTable({ dealsInfo }) {
   //     console.log({ results });
   //     setDealsData(results);
   //     // const deals = dealsInfo.map(async (item) => {
-  //     //   const res = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getImage", {
+  //     //   const res = await axios.get("${process.env.API_ENDPOINT}/getImage", {
   //     //     params: {
   //     //       positionID: item.position,
   //     //     },
@@ -122,7 +122,7 @@ function DealsTable({ dealsInfo }) {
       formData.append("positionID", positionID);
 
       axios
-        .post("https://doubtful-fawn-baseball-cap.cyclic.app/save", formData, {
+        .post(`${process.env.REACT_APP_API_ENDPOINT}/save`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -146,7 +146,7 @@ function DealsTable({ dealsInfo }) {
           //     dealsInfo.map(async (item) => {
           //       // Replace 'your_api_endpoint' with the actual API endpoint
           //       const response = await axios.get(
-          //         "https://doubtful-fawn-baseball-cap.cyclic.app/getImage",
+          //         "${process.env.API_ENDPOINT}/getImage",
           //         {
           //           params: {
           //             positionID: item.position,
@@ -160,7 +160,7 @@ function DealsTable({ dealsInfo }) {
           //   console.log({ results });
           //   setDealsData(results);
           //   // const deals = dealsInfo.map(async (item) => {
-          //   //   const res = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getImage", {
+          //   //   const res = await axios.get("${process.env.API_ENDPOINT}/getImage", {
           //   //     params: {
           //   //       positionID: item.position,
           //   //     },
@@ -184,7 +184,7 @@ function DealsTable({ dealsInfo }) {
     // get image path
     setCurrentImage(null);
     const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/getImage",
+      `${process.env.REACT_APP_API_ENDPOINT}/getImage`,
       {
         params: {
           positionID: positionID,
@@ -201,7 +201,7 @@ function DealsTable({ dealsInfo }) {
     // get image path
     setCurrentImage(null);
     const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/removeImage",
+      `${process.env.REACT_APP_API_ENDPOINT}/removeImage`,
       {
         params: {
           positionID: positionID,
@@ -266,18 +266,10 @@ function DealsTable({ dealsInfo }) {
                     {!currentImage && item.image_path && (
                       <>
                         <img
-                          src={
-                            "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" +
-                            item.image_path
-                          }
+                          src={item.image_path}
                           alt={"img"}
                           style={{ height: "30px" }}
-                          onClick={() =>
-                            showZoomedImage(
-                              "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" +
-                                item.image_path
-                            )
-                          }
+                          onClick={() => showZoomedImage(item.image_path)}
                         />
                         {/* <FaTimesCircle
                           style={{ position: "absolute", right: 0 }}
@@ -295,10 +287,7 @@ function DealsTable({ dealsInfo }) {
                     {currentImage && currentPosition === item.position_id && (
                       <>
                         <img
-                          src={
-                            "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" +
-                            item.image_path
-                          }
+                          src={`${process.env.REACT_APP_API_ENDPOINT}/uploads/${item.image_path}`}
                           alt={"img"}
                           style={{ height: "30px" }}
                         />
@@ -318,9 +307,7 @@ function DealsTable({ dealsInfo }) {
                 </td>
                 <td>
                   <EditableComponent
-                    apiUrl={
-                      "https://doubtful-fawn-baseball-cap.cyclic.app/updateDescription"
-                    }
+                    apiUrl={`${process.env.REACT_APP_API_ENDPOINT}/updateDescription`}
                     initialContent={item.description}
                     positionId={item.position_id}
                   />

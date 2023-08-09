@@ -77,7 +77,7 @@ export const UploadForm = ({ onUpload }) => {
           });
         }
         axios
-          .post("https://doubtful-fawn-baseball-cap.cyclic.app/saveTrades", {
+          .post(`${process.env.REACT_APP_API_ENDPOINT}/saveTrades`, {
             tradesData: profitArr,
           })
           .then((response) => {
