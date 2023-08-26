@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
-
+import { useNavigate } from "react-router-dom";
 const UploadButton = styled.button`
   background: #123456;
   color: #fff;
@@ -15,7 +15,7 @@ const UploadButton = styled.button`
 export const UploadForm = ({ onUpload }) => {
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
-
+  const navigate = useNavigate();
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -28,13 +28,28 @@ export const UploadForm = ({ onUpload }) => {
   const handleFormSubmit = (file) => {
     if (file) {
       const reader = new FileReader();
+      let balance = "";
       reader.onload = () => {
         const fileContent = reader.result;
         const regex = /<tr bgcolor(.*) align="right">([\s\S]*?)<\/tr>/g;
         const tableRows = fileContent.match(regex);
         const dateAndTimeArr = [];
         const profitArr = [];
+        const regexBalance =
+          /<td (.*)>Balance:<\/td>\s+<td (.*)<b>(.*)<\/b><\/td>/gm;
 
+        const pattern =
+          /<td (.*)>Balance:<\/td>\s+<td colspan="2"><b>(.*?)<\/b><\/td>/;
+        const matches = fileContent.match(pattern);
+
+        if (matches) {
+          console.log({ matches });
+          const balanceValue = matches[2];
+          balance = balanceValue;
+          console.log("Balance:", balanceValue);
+        } else {
+          console.log("Balance not found");
+        }
         if (tableRows) {
           tableRows.forEach((row) => {
             const tdRegex = /<td[^>]*>(.*?)<\/td>/g;
@@ -76,12 +91,25 @@ export const UploadForm = ({ onUpload }) => {
             }
           });
         }
+
+        axios
+          .post(`${process.env.REACT_APP_API_ENDPOINT}/accountInfo`, {
+            balance: balance,
+          })
+          .then((response) => {
+            console.log("Response from server:", response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
         axios
           .post(`${process.env.REACT_APP_API_ENDPOINT}/saveTrades`, {
             tradesData: profitArr,
           })
           .then((response) => {
             console.log("Response from server:", response.data);
+            navigate("/calendar");
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -105,7 +133,7 @@ export const UploadForm = ({ onUpload }) => {
         }
 
         console.log({ yearMonthObject });
-        onUpload({ date: [...new Set(dateAndTimeArr)], data: profitArr });
+        // onUpload({ date: [...new Set(dateAndTimeArr)], data: profitArr });
       };
       reader.readAsText(file);
     }
@@ -119,7 +147,7 @@ export const UploadForm = ({ onUpload }) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      <UploadButton onClick={handleButtonClick}>Upload File</UploadButton>
+      <UploadButton onClick={handleButtonClick}>+ Import Trades</UploadButton>
     </>
   );
 };

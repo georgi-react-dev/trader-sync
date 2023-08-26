@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 // Create an ElementMaker component
-function EditableComponent({ apiUrl, initialContent, positionId }) {
+function EditableComponent({ apiUrl, initialContent, id }) {
   const [showInputEle, setShowInputEle] = useState(false);
   const [content, setContent] = useState(initialContent);
 
@@ -13,7 +13,7 @@ function EditableComponent({ apiUrl, initialContent, positionId }) {
       // Make the API request with the sanitized content on blur
       await axios.post(apiUrl, {
         description: content,
-        positionID: positionId,
+        id: id,
       });
       console.log("API request sent successfully!");
       setShowInputEle(false);
@@ -23,7 +23,7 @@ function EditableComponent({ apiUrl, initialContent, positionId }) {
   };
 
   return (
-    <span>
+    <span style={{ flex: "0.5" }}>
       {
         // Use JavaScript's ternary operator to specify <span>'s inner content
         showInputEle ? (
@@ -41,6 +41,7 @@ function EditableComponent({ apiUrl, initialContent, positionId }) {
               style={{
                 display: "inline-block",
                 textAlign: "left",
+                color: "black",
                 minWidth: "300px",
                 padding: "5px",
                 cursor: "pointer",

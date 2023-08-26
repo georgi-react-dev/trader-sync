@@ -2,9 +2,11 @@ import React, { createRef, useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import Badge from "../tabs/Badge";
 import format from "date-fns/format";
+import intervalToDuration from "date-fns/intervalToDuration";
 import axios from "axios";
 import Modal from "../modal/Modal";
 import ZoomModalImage from "../modal/ZoomModalImage";
+import { getTradeDuration } from "../calendar/helper";
 import {
   FaEye,
   FaPencilAlt,
@@ -13,6 +15,7 @@ import {
 } from "react-icons/fa";
 import DealDetails from "./DealDetails";
 import EditableComponent from "../editable/EditableComponent";
+import PositionEditingInfo from "../positionEditingInfo/PositionEditingInfo";
 const TableContainer = styled.div`
   table {
     width: 100%;
@@ -56,6 +59,7 @@ const ImageWrapper = styled.div`
 function DealsTable({ dealsInfo }) {
   console.log({ DEAL: dealsInfo });
   const [dealsData, setDealsData] = useState(dealsInfo);
+  const [currentPositionId, setCurrentPositionId] = useState(null);
   const fileInputRefs = dealsInfo.map(() => createRef());
 
   // useEffect(() => {
@@ -63,7 +67,7 @@ function DealsTable({ dealsInfo }) {
   //     const results = await Promise.all(
   //       dealsInfo.map(async (item) => {
   //         // Replace 'your_api_endpoint' with the actual API endpoint
-  //         const response = await axios.get("${process.env.API_ENDPOINT}/getData", {
+  //         const response = await axios.get("http://localhost:3005/getData", {
   //           params: {
   //             positionID: item.position,
   //           },
@@ -81,7 +85,7 @@ function DealsTable({ dealsInfo }) {
   //     console.log({ results });
   //     setDealsData(results);
   //     // const deals = dealsInfo.map(async (item) => {
-  //     //   const res = await axios.get("${process.env.API_ENDPOINT}/getImage", {
+  //     //   const res = await axios.get("http://localhost:3005/getImage", {
   //     //     params: {
   //     //       positionID: item.position,
   //     //     },
@@ -110,87 +114,15 @@ function DealsTable({ dealsInfo }) {
   //   // Do something with the file
   //   handleFormSubmit(file);
   // };
-  const handleFileChange = (e, positionID) => {
-    // console.log({ positionID });
-
-    const file = e.target.files[0];
-    // Do something with the file
-
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file, positionID);
-      formData.append("positionID", positionID);
-
-      axios
-        .post(`${process.env.REACT_APP_API_ENDPOINT}/save`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("Response from server:", response.data);
-
-          // setDealsData([]);
-          const test = dealsData.map((item) => {
-            if (item.position_id === positionID) {
-              item.image_path = response.data.filename;
-            }
-            return item;
-          });
-
-          console.log({ test });
-          setDealsData(test);
-
-          // const fetchData = async () => {
-          //   const results = await Promise.all(
-          //     dealsInfo.map(async (item) => {
-          //       // Replace 'your_api_endpoint' with the actual API endpoint
-          //       const response = await axios.get(
-          //         "${process.env.API_ENDPOINT}/getImage",
-          //         {
-          //           params: {
-          //             positionID: item.position,
-          //           },
-          //         }
-          //       );
-          //       // item.image = response.data.image_path;
-          //       return { ...item, image_path: response.data.image_path }; // Assuming the API returns JSON data
-          //     })
-          //   );
-          //   console.log({ results });
-          //   setDealsData(results);
-          //   // const deals = dealsInfo.map(async (item) => {
-          //   //   const res = await axios.get("${process.env.API_ENDPOINT}/getImage", {
-          //   //     params: {
-          //   //       positionID: item.position,
-          //   //     },
-          //   //   });
-          //   //   console.log({ res1112: res });
-          //   //   item.image = res.data.image_path;
-          //   // });
-          //   // console.log({ deals });
-          //   // setDealsData(deals);
-          // };
-
-          // fetchData();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    }
-  };
 
   const showImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}/getImage`,
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await axios.get("http://localhost:3005/getImage", {
+      params: {
+        positionID: positionID,
+      },
+    });
 
     console.log({ res: res.data.filename });
     setCurrentImage(res.data.image_path);
@@ -200,18 +132,20 @@ function DealsTable({ dealsInfo }) {
   const removeImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}/removeImage`,
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await axios.get("http://localhost:3005/removeImage", {
+      params: {
+        positionID: positionID,
+      },
+    });
   };
 
-  const showZoomedImage = (url) => {
+  const showZoomedImage = (positionId, url) => {
     setImageUrl(url);
+    setCurrentPositionId(positionId);
+    setShowImageModal(true);
+  };
+  const showImagesModal = (positionId) => {
+    setCurrentPositionId(positionId);
     setShowImageModal(true);
   };
   return (
@@ -227,11 +161,12 @@ function DealsTable({ dealsInfo }) {
             <th>return $</th>
             <th>lot size</th>
             <th>pips</th>
-            <th>Image</th>
-            <th>Description</th>
+            <th>Images</th>
+
             <th>Open time</th>
             <th>Close time</th>
-            <th>Actions</th>
+            <th>Duration</th>
+            {/* <th>Actions</th> */}
           </tr>
         </thead>
         <tbody>
@@ -262,67 +197,58 @@ function DealsTable({ dealsInfo }) {
                   {Math.abs((item.profit / item.volume) * 0.1).toFixed(2)}
                 </td>
                 <td>
-                  <ImageWrapper style={{ position: "relative" }}>
+                  <FaFileUpload
+                    size={"1.2rem"}
+                    cursor="pointer"
+                    color="lightblue"
+                    onClick={() => showImagesModal(item.position_id)}
+                  />
+                  {/* <ImageWrapper style={{ position: "relative" }}>
                     {!currentImage && item.image_path && (
                       <>
                         <img
                           src={item.image_path}
                           alt={"img"}
-                          style={{ height: "30px" }}
-                          onClick={() => showZoomedImage(item.image_path)}
+                          style={{ height: "70px" }}
+                          onClick={() =>
+                            showZoomedImage(item.position_id, item.image_path)
+                          }
                         />
-                        {/* <FaTimesCircle
-                          style={{ position: "absolute", right: 0 }}
-                          size={"1.2rem"}
-                          color={"red"}
-                          cursor="pointer"
-                          onClick={() => {
-                            setShowModal(true);
-                            // removeImageByPositionID(item.position);
-                          }}
-                        /> */}
+                        
                       </>
                     )}
 
                     {currentImage && currentPosition === item.position_id && (
                       <>
                         <img
-                          src={`${process.env.REACT_APP_API_ENDPOINT}/uploads/${item.image_path}`}
+                          src={
+                            "http://localhost:3005/uploads/" + item.image_path
+                          }
                           alt={"img"}
                           style={{ height: "30px" }}
                         />
-                        {/* <FaTimesCircle
-                          style={{ position: "absolute", right: 0 }}
-                          size={"1.2rem"}
-                          color={"red"}
-                          cursor="pointer"
-                          onClick={() => {
-                            setShowModal(true);
-                            // removeImageByPositionID(item.position);
-                          }}
-                        /> */}
+                        
                       </>
                     )}
-                  </ImageWrapper>
+                  </ImageWrapper> */}
                 </td>
-                <td>
+                {/* <td>
                   <EditableComponent
-                    apiUrl={`${process.env.REACT_APP_API_ENDPOINT}/updateDescription`}
+                    apiUrl={"http://localhost:3005/updateDescription"}
                     initialContent={item.description}
                     positionId={item.position_id}
                   />
-                </td>
+                </td> */}
                 <td>{format(new Date(item.time_open), "HH:mm:ss")}</td>
                 <td>{format(new Date(item.time_close), "HH:mm:ss")}</td>
-                <td>
-                  {/* <FaPencilAlt
-                    size={"1.2rem"}
-                    cursor="pointer"
-                    onClick={() => {
-                      setCurrentPosition(item.position);
-                      setShowModal(true);
-                    }}
-                  /> */}
+                <td style={{ textAlign: "left" }}>
+                  {getTradeDuration(
+                    new Date(item.time_open),
+                    new Date(item.time_close)
+                  )}
+                </td>
+                {/* <td>
+                  
                   <input
                     type="file"
                     ref={fileInputRefs[index]}
@@ -347,13 +273,9 @@ function DealsTable({ dealsInfo }) {
                       color="lightblue"
                       onClick={() => handleButtonClick(index)}
                     />
-                    {/* <FaPencilAlt
-                      size={"1.2rem"}
-                      cursor="pointer"
-                      onClick={() => showImageByPositionID(item.position)}
-                    /> */}
+                    
                   </div>
-                </td>
+                </td> */}
               </tr>
             );
           })}
@@ -365,11 +287,12 @@ function DealsTable({ dealsInfo }) {
         </Modal>
       )}
       {showImageModal && (
-        <ZoomModalImage setShowModal={setShowImageModal}>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+        <Modal setShowModal={setShowImageModal}>
+          {/* <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={imageUrl} alt={"img"} style={{ height: "80vh" }} />
-          </div>
-        </ZoomModalImage>
+          </div> */}
+          <PositionEditingInfo positionId={currentPositionId} />
+        </Modal>
       )}
     </TableContainer>
   );

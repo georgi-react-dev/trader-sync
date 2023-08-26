@@ -8,11 +8,13 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
+    "chart.js": "^4.4.0",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dompurify": "^3.0.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "faker": "^5.5.3",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35",
     "multer": "^1.4.5-lts.1",
@@ -20,9 +22,11 @@
     "nanoid": "^4.0.2",
     "path": "^0.12.7",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.16.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
+    "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "styled-components": "^6.0.2",
     "web-vitals": "^2.1.4"
@@ -51,5 +55,4 @@
       "last 1 safari version"
     ]
   }
-  
 }

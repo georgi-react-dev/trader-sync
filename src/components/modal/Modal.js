@@ -24,6 +24,7 @@ const ModalContent = styled.div`
   flex-direction: column;
   gap: 2rem;
   width: 95%;
+  max-height: 100%;
   // min-height: 300px;
 `;
 const ModalHeader = styled.div`
@@ -37,6 +38,7 @@ const Modal = ({ setShowModal, children }) => {
         <ModalHeader>
           <FaTimesCircle
             cursor={"pointer"}
+            color="gray"
             onClick={(e) => {
               e.preventDefault();
               setShowModal(false);

@@ -37,6 +37,7 @@ const Modal = ({ setShowModal, children }) => {
         <ModalHeader>
           <FaTimesCircle
             cursor={"pointer"}
+            color="gray"
             onClick={(e) => {
               e.preventDefault();
               setShowModal(false);

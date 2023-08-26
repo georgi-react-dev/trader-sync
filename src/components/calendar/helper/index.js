@@ -1,3 +1,27 @@
+import intervalToDuration from "date-fns/intervalToDuration";
+
+export const getTradeDuration = (start, end) => {
+  const obj = intervalToDuration({
+    start: new Date(start),
+    end: new Date(end),
+  });
+  // days: 0;
+  // hours: 0;
+  // minutes: 9;
+  // months: 0;
+  // seconds: 24;
+  // years: 0;
+
+  let string = "";
+  Object.entries(obj).map((value, key, arr) => {
+    if (value[1] > 0 && value[0] !== "seconds") {
+      string += value[0].toUpperCase() + ": " + value[1] + " ";
+      // string += value[0].toUpperCase() + ": " + value[1] + " ";
+    }
+  });
+
+  return string;
+};
 export const getDayDealsLength = (currentDay, data) => {
   const countByKey = (data, key) => {
     return data.reduce((count, value) => {
@@ -29,6 +53,58 @@ export const getDayDealsProfit = (currentDay, data) => {
   //format(new Date(year, month, day), "yyyy.MM.dd");
   return `${profit.toFixed(2)} `;
 };
+
+export const getPipsForDay = (currentDay, data) => {
+  console.log({ data });
+  const pips = (data, key) => {
+    return data.reduce((acc, value) => {
+      if (value.trade_date === key) {
+        const pips = (value.profit / value.volume) * 0.1;
+        acc += pips;
+      }
+      return acc;
+    }, 0);
+  };
+
+  const profit = pips(data, currentDay);
+  if (!profit) return null;
+  //format(new Date(year, month, day), "yyyy.MM.dd");
+  return `pips ${profit.toFixed(2)} `;
+};
+
+export const getPipsForMonth = (data) => {
+  console.log({ data });
+  const monthPips = (data, key) => {
+    return data.reduce((acc, value) => {
+      // if (value.trade_date === key) {
+      const pips = (value.profit / value.volume) * 0.1;
+      acc += pips;
+      // }
+      return acc;
+    }, 0);
+  };
+
+  const profit = monthPips(data);
+  if (!profit) return null;
+  //format(new Date(year, month, day), "yyyy.MM.dd");
+  return `Pips: ${profit.toFixed(2)} `;
+};
+// export const getPipsForDay = (currentDay, data) => {
+//   const arrByKey = (data, key) => {
+//     return data.reduce((arr, value) => {
+//       if (value.trade_date === key) {
+//         const pips = Math.abs((value.profit / value.volume) * 0.1);
+//         acc += +pips;
+//       }
+//       return arr;
+//     }, 0);
+//   };
+
+//   const finalArr = arrByKey(data, currentDay);
+//   if (!finalArr) return null;
+//   //format(new Date(year, month, day), "yyyy.MM.dd");
+//   return finalArr;
+// };
 
 export const getDayDealsInfo = (currentDay, data) => {
   const arrByKey = (data, key) => {

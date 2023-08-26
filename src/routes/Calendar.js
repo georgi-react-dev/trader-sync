@@ -1,13 +1,14 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { styled } from "styled-components";
-import Modal from "../modal/Modal";
+import Modal from "../components/modal/Modal";
 import { sumBy } from "lodash";
 import format from "date-fns/format";
-import DealsTable from "../deals/DealsTable";
+import DealsTable from "../components/deals/DealsTable";
 import axios from "axios";
 import DatePicker from "react-datepicker";
-import SwitchButton from "../buttons/SwitchButton";
-import { UploadForm } from "../form/UploadForm";
+import SwitchButton from "../components/buttons/SwitchButton";
+import { DashboardHeader } from "./Dashboard";
+import Chart from "../components/chart/TradingViewWidget";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   getDayDealsLength,
@@ -17,7 +18,8 @@ import {
   getMonthlyWeeklyProfits,
   getPipsForMonth,
   getPipsForDay,
-} from "./helper";
+} from "../components/calendar/helper";
+import DayChart from "../components/charts/dayChart/DayChart";
 const DayContainer = styled.div`
   color: #fff;
   overflow: hidden;
@@ -69,8 +71,10 @@ const Calendar = () => {
   const [weeksDealsCount, setWeeksDealsCount] = useState([]);
   console.log({ selectedDateSr: selectedDate });
   const [showModal, setShowModal] = useState(false);
+  const [showGraphModal, setShowGraphModal] = useState(false);
+
   const [dealsInfo, setDealsInfo] = useState(null);
-  const [isBussinessDays, setIsBussinessDays] = useState(false);
+  const [isBussinessDays, setIsBussinessDays] = useState(true);
   const getDayContainerBackground = (profit) => {
     if (!profit) return "";
     return profit >= 0 ? " profit" : " loss";
@@ -79,7 +83,7 @@ const Calendar = () => {
 
   const handleSwitchToggle = (e) => {
     console.log({ e });
-    setSwitchOn((prev) => !prev);
+    // setSwitchOn((prev) => !prev);
     setIsBussinessDays(e.target.checked);
   };
   // Function to handle date selection
@@ -133,8 +137,8 @@ const Calendar = () => {
         <DayContainer
           className={"day-container" + getDayContainerBackground(profit)}
           style={{
-            width: "150px",
-            height: "150px",
+            width: "100px",
+            height: "100px",
           }}
           key={day > 0 ? day : day + "_" + index}
           onClick={() => {
@@ -290,63 +294,62 @@ const Calendar = () => {
   };
 
   return (
-    <div style={{ width: "800px", margin: "auto" }}>
-      <div
-        style={{
-          display: "flex",
-          gap: "2rem",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h1>Forex Calendar</h1> <UploadForm />
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <DashboardHeader>
+        <h1 style={{ position: "absolute" }}>Calendar</h1>
+        <div style={{ margin: "0 auto" }}>
+          <DatePicker
+            style={{ marginLeft: "100px" }}
+            selected={selectedDate}
+            dateFormat="MMMM yyyy"
+            showMonthYearPicker
+            onChange={(date) => setSelectedDate(date)}
+          />
+        </div>
+      </DashboardHeader>
       {showModal && (
         <Modal setShowModal={setShowModal}>
           <DealsTable dealsInfo={dealsInfo} />
         </Modal>
       )}
-      <div>
-        <DatePicker
-          selected={selectedDate}
-          dateFormat="MMMM yyyy"
-          showMonthYearPicker
-          onChange={(date) => setSelectedDate(date)}
-        />
-      </div>
-      <div style={{ display: "flex", gap: "2rem" }}>
-        <h2>
-          {selectedDate.toLocaleString("default", {
-            year: "numeric",
-            month: "long",
-          })}
-        </h2>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h2
-            style={{
-              color: Number(monthTotal) > 0 ? "#468481" : "#955b80",
+      <div style={{ display: "flex", gap: "2rem", justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: "2rem" }}>
+          {/* <h2>
+            {selectedDate.toLocaleString("default", {
+              year: "numeric",
               marginBottom: "0",
+              month: "long",
+            })}
+          </h2> */}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <h2
+              style={{
+                color: Number(monthTotal) > 0 ? "#468481" : "#955b80",
+              }}
+            >
+              ${monthTotal?.toFixed(2)}
+            </h2>
+            <span>Return $ for the Month</span>
+            <span>{getPipsForMonth(data)}</span>
+          </div>
+
+          <div
+            style={{
+              width: "435px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            ${monthTotal?.toFixed(2)}
-          </h2>
-          <span>Return $ for the Month</span>
-          <span>{getPipsForMonth(data)}</span>
-        </div>
+            <span>Week Days</span>
+            <SwitchButton on={switchOn} onClick={handleSwitchToggle} />
+            <span>Bussiness Days</span>
 
-        <div
-          style={{
-            width: "300px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span>Week Days</span>
-          <SwitchButton on={switchOn} onClick={handleSwitchToggle} />
-          <span>Bussiness Days</span>
+            <button onClick={() => setShowGraphModal(true)}>Show Graph</button>
+          </div>
         </div>
       </div>
+
       {selectedDate && (
         <div
           style={{
@@ -364,7 +367,7 @@ const Calendar = () => {
 
               gridTemplateColumns: `repeat(${
                 isBussinessDays ? "5" : "7"
-              }, 150px)`,
+              }, 100px)`,
               gap: "10px",
               justifyContent: "center",
             }}
@@ -393,7 +396,7 @@ const Calendar = () => {
               style={{
                 display: "grid",
                 flexDirection: "column",
-                gridTemplateRows: "repeat(7, 150px)",
+                gridTemplateRows: "repeat(7, 100px)",
                 gap: "10px",
               }}
             >
@@ -428,6 +431,13 @@ const Calendar = () => {
           {/* <DealsTable dealsInfo={dealsInfo} /> */}
         </div>
       )}
+      {showGraphModal && (
+        <Modal setShowModal={setShowGraphModal}>
+          <DayChart date={selectedDate} data={data} />
+        </Modal>
+      )}
+
+      {/* <Chart /> */}
     </div>
   );
 };
