@@ -304,7 +304,6 @@ const Calendar = () => {
             style={{ marginLeft: "100px" }}
             selected={selectedDate}
             dateFormat="MMMM yyyy"
-            readOnly
             showMonthYearPicker
             onChange={(date) => setSelectedDate(date)}
           />
