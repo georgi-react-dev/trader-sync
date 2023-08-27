@@ -93,7 +93,7 @@ export const UploadForm = ({ onUpload }) => {
         }
 
         axios
-          .post(`${process.env.REACT_APP_API_ENDPOINT}/accountInfo`, {
+          .post(`https://doubtful-fawn-baseball-cap.cyclic.app/accountInfo`, {
             balance: balance,
           })
           .then((response) => {
@@ -104,7 +104,7 @@ export const UploadForm = ({ onUpload }) => {
           });
 
         axios
-          .post(`${process.env.REACT_APP_API_ENDPOINT}/saveTrades`, {
+          .post(`https://doubtful-fawn-baseball-cap.cyclic.app/saveTrades`, {
             tradesData: profitArr,
           })
           .then((response) => {
