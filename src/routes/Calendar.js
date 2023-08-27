@@ -212,18 +212,15 @@ const Calendar = () => {
   useEffect(() => {
     const fetchData = async () => {
       // Replace 'your_api_endpoint' with the actual API endpoint
-      const response = await axios.get(
-        "https://doubtful-fawn-baseball-cap.cyclic.app/getTrades",
-        {
-          params: {
-            year_month_date: `${selectedDate.getFullYear()}.${
-              selectedDate.getMonth() + 1 < 10
-                ? `0${selectedDate.getMonth() + 1}`
-                : selectedDate.getMonth() + 1
-            }`,
-          },
-        }
-      );
+      const response = await axios.get("http://localhost:3005/getTrades", {
+        params: {
+          year_month_date: `${selectedDate.getFullYear()}.${
+            selectedDate.getMonth() + 1 < 10
+              ? `0${selectedDate.getMonth() + 1}`
+              : selectedDate.getMonth() + 1
+          }`,
+        },
+      });
       console.log({ REZULTS: response.data.trades });
       //setSelectedDate(new Date(response.data.trades[0].trade_date));
       setData(response.data.trades);

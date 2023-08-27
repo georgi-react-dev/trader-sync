@@ -118,14 +118,11 @@ function DealsTable({ dealsInfo }) {
   const showImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/getImage",
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await axios.get("http://localhost:3005/getImage", {
+      params: {
+        positionID: positionID,
+      },
+    });
 
     console.log({ res: res.data.filename });
     setCurrentImage(res.data.image_path);
@@ -135,14 +132,11 @@ function DealsTable({ dealsInfo }) {
   const removeImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/removeImage",
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await axios.get("http://localhost:3005/removeImage", {
+      params: {
+        positionID: positionID,
+      },
+    });
   };
 
   const showZoomedImage = (positionId, url) => {
