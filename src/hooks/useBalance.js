@@ -6,7 +6,9 @@ const useBalance = (url, selectedDate) => {
   useEffect(() => {
     const fetchData = async () => {
       // Replace 'your_api_endpoint' with the actual API endpoint
-      const response = await axios.get("http://localhost:3005/accountInfo");
+      const response = await axios.get(
+        "https://doubtful-fawn-baseball-cap.cyclic.app/accountInfo"
+      );
       console.log({ REZULTS22222: response.data });
       //setSelectedDate(new Date(response.data.trades[0].trade_date));
       setBalance(response.data.balance);

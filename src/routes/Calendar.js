@@ -51,7 +51,7 @@ const DayContainer = styled.div`
       top: -4px;
       border: 1px solid #7e7e7e;
       left: -1px;
-      font-size: 1.2rem;
+      font-size: 1rem;
       padding-right: 2px;
       padding-left: 2px;
     }
@@ -74,7 +74,7 @@ const Calendar = () => {
   const [showGraphModal, setShowGraphModal] = useState(false);
 
   const [dealsInfo, setDealsInfo] = useState(null);
-  const [isBussinessDays, setIsBussinessDays] = useState(true);
+  const [isBussinessDays, setIsBussinessDays] = useState(false);
   const getDayContainerBackground = (profit) => {
     if (!profit) return "";
     return profit >= 0 ? " profit" : " loss";
@@ -181,8 +181,7 @@ const Calendar = () => {
                 <br />
                 {pips}
               </div>
-              <br />
-              {profit ? profit + " $" : null}
+              <strong>{profit ? "$" + profit : null}</strong>
             </div>
           </div>
         </DayContainer>
@@ -213,15 +212,18 @@ const Calendar = () => {
   useEffect(() => {
     const fetchData = async () => {
       // Replace 'your_api_endpoint' with the actual API endpoint
-      const response = await axios.get("http://localhost:3005/getTrades", {
-        params: {
-          year_month_date: `${selectedDate.getFullYear()}.${
-            selectedDate.getMonth() + 1 < 10
-              ? `0${selectedDate.getMonth() + 1}`
-              : selectedDate.getMonth() + 1
-          }`,
-        },
-      });
+      const response = await axios.get(
+        "https://doubtful-fawn-baseball-cap.cyclic.app/getTrades",
+        {
+          params: {
+            year_month_date: `${selectedDate.getFullYear()}.${
+              selectedDate.getMonth() + 1 < 10
+                ? `0${selectedDate.getMonth() + 1}`
+                : selectedDate.getMonth() + 1
+            }`,
+          },
+        }
+      );
       console.log({ REZULTS: response.data.trades });
       //setSelectedDate(new Date(response.data.trades[0].trade_date));
       setData(response.data.trades);
