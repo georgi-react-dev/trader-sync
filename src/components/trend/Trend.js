@@ -7,7 +7,6 @@ function Trend() {
   const [switchOn, setSwitchOn] = useState(false);
 
   const handleSwitchToggle = (e) => {
-    console.log({ e });
     setSwitchOn((prev) => !prev);
   };
 

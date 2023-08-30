@@ -1,62 +1,21 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import Modal from "../components/modal/Modal";
 import { sumBy } from "lodash";
-import format from "date-fns/format";
 import DealsTable from "../components/deals/DealsTable";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import SwitchButton from "../components/buttons/SwitchButton";
 import { DashboardHeader } from "./Dashboard";
-import Chart from "../components/chart/TradingViewWidget";
+
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  getDayDealsLength,
-  getDayDealsInfo,
   getWeekDays,
-  getDayDealsProfit,
-  getMonthlyWeeklyProfits,
   getPipsForMonth,
-  getPipsForDay,
+  getTradesForMonth,
 } from "../components/calendar/helper";
 import DayChart from "../components/charts/dayChart/DayChart";
-const DayContainer = styled.div`
-  color: #fff;
-  overflow: hidden;
-  // position: relative;
-  background: #252b3d;
-
-  display: flex;
-  text-align: left;
-  flex-direction: column;
-
-  &.profit {
-    background: #125c51;
-    border-left: 2px solid #939393;
-  }
-  &.loss {
-    background: #4f293f;
-    border-left: 2px solid #939393;
-  }
-
-  .inner-container {
-    padding: 10px 0 0 10px;
-    display: flex;
-    text-align: left;
-    flex-direction: column;
-    position: relative;
-
-    span {
-      position: absolute;
-      top: -4px;
-      border: 1px solid #7e7e7e;
-      left: -1px;
-      font-size: 1rem;
-      padding-right: 2px;
-      padding-left: 2px;
-    }
-  }
-`;
+import DayContainer from "../components/calendar/dayContainer/DayContainer";
 
 const Calendar = () => {
   // const test = sumBy(data, function (o) {
@@ -69,31 +28,21 @@ const Calendar = () => {
   const [weeksProfits, setWeeksProfits] = useState([]);
   const [monthTotal, setMonthTotal] = useState(null);
   const [weeksDealsCount, setWeeksDealsCount] = useState([]);
-  console.log({ selectedDateSr: selectedDate });
   const [showModal, setShowModal] = useState(false);
   const [showGraphModal, setShowGraphModal] = useState(false);
 
   const [dealsInfo, setDealsInfo] = useState(null);
   const [isBussinessDays, setIsBussinessDays] = useState(false);
-  const getDayContainerBackground = (profit) => {
-    if (!profit) return "";
-    return profit >= 0 ? " profit" : " loss";
-  };
+
   const [switchOn, setSwitchOn] = useState(false);
 
   const handleSwitchToggle = (e) => {
-    console.log({ e });
     // setSwitchOn((prev) => !prev);
     setIsBussinessDays(e.target.checked);
-  };
-  // Function to handle date selection
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
   };
 
   // Function to render the calendar grid
   const renderCalendar = () => {
-    const currentDate = new Date();
     const month = selectedDate.getMonth();
     const year = selectedDate.getFullYear();
 
@@ -103,9 +52,6 @@ const Calendar = () => {
 
     // Get the index of the first day of the month
     const firstDayIndex = new Date(year, month, 1).getDay();
-    console.log({ month });
-    console.log({ year });
-    console.log({ firstDayIndex });
     // Create an array of empty grid cells before the first day
     const emptyCells = Array(firstDayIndex).fill(null);
     const calendarCells = [
@@ -116,75 +62,21 @@ const Calendar = () => {
     ];
 
     const businessDays = getBusinessDays(year, month);
-    console.log({ businessDays });
     let dataArr = isBussinessDays ? businessDays : calendarCells;
     const cells = dataArr.map((day, index) => {
-      const profit = getDayDealsProfit(
-        format(new Date(year, month, day), "yyyy.MM.dd"),
-        data
-      );
-
-      const dealsLength = getDayDealsLength(
-        format(new Date(year, month, day), "yyyy.MM.dd"),
-        data
-      );
-
-      const pips = getPipsForDay(
-        format(new Date(year, month, day), "yyyy.MM.dd"),
-        data
-      );
       return (
-        <DayContainer
-          className={"day-container" + getDayContainerBackground(profit)}
-          style={{
-            width: "100px",
-            height: "100px",
-          }}
-          key={day > 0 ? day : day + "_" + index}
-          onClick={() => {
-            setDealsInfo(
-              getDayDealsInfo(
-                format(new Date(year, month, day), "yyyy.MM.dd"),
-                data
-              )
-            );
-            // showDayDealsInfo(
-            //   format(new Date(year, month, day), "yyyy.MM.dd"),
-            //   data
-            // )
-            setShowModal(true);
-          }}
-          data-date={format(new Date(year, month, day), "yyyy.MM.dd")}
-          data-profit={profit}
-          data-deals-length={dealsLength}
-        >
-          <div className="inner-container">
-            <span>{day}</span>
-
-            <div style={{ marginTop: "1rem" }}>
-              <div
-              // onClick={() => {
-              //   setDealsInfo(
-              //     getDayDealsInfo(
-              //       format(new Date(year, month, day), "yyyy.MM.dd"),
-              //       data
-              //     )
-              //   );
-              //   // showDayDealsInfo(
-              //   //   format(new Date(year, month, day), "yyyy.MM.dd"),
-              //   //   data
-              //   // )
-              //   setShowModal(true);
-              // }}
-              >
-                {dealsLength}
-                <br />
-                {pips}
-              </div>
-              <strong>{profit ? "$" + profit : null}</strong>
-            </div>
-          </div>
-        </DayContainer>
+        data.length && (
+          <DayContainer
+            key={index}
+            data={data}
+            year={year}
+            month={month}
+            day={day}
+            index={index}
+            setDealsInfo={setDealsInfo}
+            setShowModal={setShowModal}
+          />
+        )
       );
     });
 
@@ -233,13 +125,10 @@ const Calendar = () => {
 
   useEffect(() => {
     const dayContainerArr = document.getElementsByClassName("day-container");
-    // console.log({ length: dayContainerArr.length });
 
     const weekProfit = [];
     const dealsLength = [];
     Array.from(dayContainerArr).forEach((element, index) => {
-      console.log({ elementProfitd: element.dataset.dealsLength });
-
       if (element.dataset.profit !== undefined) {
         weekProfit.push(Number(element.dataset.profit));
       } else {
@@ -273,16 +162,13 @@ const Calendar = () => {
       }
     });
 
-    console.log({ positivePips });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, data]);
 
   const nthSum = (arr) => {
-    console.log({ HERE: arr });
     let sum = 0;
     const arrr = [];
     for (let i = 0; i < arr.length; i++) {
-      console.log({ item: arr[i] });
       sum += +arr[i];
       if ((i + 1) % 7 === 0) {
         arrr.push(sum.toFixed(2));
@@ -316,13 +202,6 @@ const Calendar = () => {
       )}
       <div style={{ display: "flex", gap: "2rem", justifyContent: "center" }}>
         <div style={{ display: "flex", gap: "2rem" }}>
-          {/* <h2>
-            {selectedDate.toLocaleString("default", {
-              year: "numeric",
-              marginBottom: "0",
-              month: "long",
-            })}
-          </h2> */}
           <div style={{ display: "flex", flexDirection: "column" }}>
             <h2
               style={{
@@ -333,6 +212,7 @@ const Calendar = () => {
             </h2>
             <span>Return $ for the Month</span>
             <span>{getPipsForMonth(data)}</span>
+            <span>{getTradesForMonth(data)}</span>
           </div>
 
           <div
@@ -376,9 +256,6 @@ const Calendar = () => {
           >
             {renderCalendar()}
           </div>
-          {/* {console.log({
-            getMonthlyWeeklyProfits: getMonthlyWeeklyProfits(data),
-          })} */}
 
           <div
             style={{
@@ -430,7 +307,6 @@ const Calendar = () => {
               })}
             </div>
           </div>
-          {/* <DealsTable dealsInfo={dealsInfo} /> */}
         </div>
       )}
       {showGraphModal && (

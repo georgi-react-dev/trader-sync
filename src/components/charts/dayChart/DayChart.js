@@ -24,8 +24,6 @@ function DayChart({ date, data }) {
   // win / loss status,
   const getDatesByStatus = (data, status) => {
     return data.reduce((item, value) => {
-      console.log({ value });
-
       if (status === "win") {
         if (value.profit > 0) {
           item.push(value);
@@ -42,10 +40,10 @@ function DayChart({ date, data }) {
   const datesByStatusWin = getDatesByStatus(data, "win");
   const datesByStatusLoss = getDatesByStatus(data, "loss");
 
-  console.log("==============WIN===============");
-  console.table(datesByStatusWin);
+  //   console.log("==============WIN===============");
+  //   console.table(datesByStatusWin);
 
-  console.log("==============LOSS===============");
+  //   console.log("==============LOSS===============");
 
   console.table(datesByStatusLoss);
 

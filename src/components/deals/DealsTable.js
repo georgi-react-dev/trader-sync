@@ -57,7 +57,6 @@ const ImageWrapper = styled.div`
 `;
 
 function DealsTable({ dealsInfo }) {
-  console.log({ DEAL: dealsInfo });
   const [dealsData, setDealsData] = useState(dealsInfo);
   const [currentPositionId, setCurrentPositionId] = useState(null);
   const fileInputRefs = dealsInfo.map(() => createRef());
@@ -105,8 +104,6 @@ function DealsTable({ dealsInfo }) {
   const [showImageModal, setShowImageModal] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const handleButtonClick = (index) => {
-    console.log({ index });
-    console.log({ fileInputRefs });
     fileInputRefs[index].current.click();
   };
   // const handleFileChange = (event) => {
@@ -127,7 +124,6 @@ function DealsTable({ dealsInfo }) {
       }
     );
 
-    console.log({ res: res.data.filename });
     setCurrentImage(res.data.image_path);
     setCurrentPosition(positionID);
   };
@@ -177,7 +173,6 @@ function DealsTable({ dealsInfo }) {
         </thead>
         <tbody>
           {dealsData?.map((item, index) => {
-            console.log({ item });
             return (
               <tr key={item.position_id}>
                 <td>{item.position_id}</td>

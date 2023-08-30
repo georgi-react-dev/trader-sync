@@ -42,7 +42,7 @@ function Dashboard() {
       </DashboardHeader>
       <DashBoardItem>
         <div>Net P&L</div>
-        <span className="balance">${balance}</span>
+        {!balance ? null : <span className="balance">${balance}</span>}
       </DashBoardItem>
     </div>
   );

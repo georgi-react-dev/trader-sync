@@ -55,7 +55,6 @@ export const getDayDealsProfit = (currentDay, data) => {
 };
 
 export const getPipsForDay = (currentDay, data) => {
-  console.log({ data });
   const pips = (data, key) => {
     return data.reduce((acc, value) => {
       if (value.trade_date === key) {
@@ -73,7 +72,6 @@ export const getPipsForDay = (currentDay, data) => {
 };
 
 export const getPipsForMonth = (data) => {
-  console.log({ data });
   const monthPips = (data, key) => {
     return data.reduce((acc, value) => {
       // if (value.trade_date === key) {
@@ -88,6 +86,23 @@ export const getPipsForMonth = (data) => {
   if (!profit) return null;
   //format(new Date(year, month, day), "yyyy.MM.dd");
   return `Pips: ${profit.toFixed(2)} `;
+};
+
+export const getTradesForMonth = (data) => {
+  const monthTrades = (data, key) => {
+    return data.reduce((acc, value) => {
+      // if (value.trade_date === key) {
+
+      acc += 1;
+      // }
+      return acc;
+    }, 0);
+  };
+
+  const trades = monthTrades(data);
+  if (!trades) return null;
+  //format(new Date(year, month, day), "yyyy.MM.dd");
+  return `Trades: ${trades} `;
 };
 // export const getPipsForDay = (currentDay, data) => {
 //   const arrByKey = (data, key) => {
@@ -157,7 +172,6 @@ export const getMonthlyWeeklyProfits = (data) => {
 
   const startDate = new Date(data[0].date);
   const endDate = new Date(data[data.length - 1].date);
-  console.log({ endDate });
   const numWeeks =
     Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)) + 1;
 

@@ -22,7 +22,6 @@ const PositionEditingInfo = ({ positionId }) => {
         },
       }
     );
-    console.log(res.data);
     if (res.data.length > 0) {
       setImages(res.data);
     } else {

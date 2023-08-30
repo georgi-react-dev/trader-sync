@@ -15,7 +15,6 @@ function EditableComponent({ apiUrl, initialContent, id }) {
         description: content,
         id: id,
       });
-      console.log("API request sent successfully!");
       setShowInputEle(false);
     } catch (error) {
       console.error("Error sending API request:", error);
