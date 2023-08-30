@@ -106,7 +106,7 @@ const Calendar = () => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <h2
               style={{
-                color: Number(monthTotal) > 0 ? "#468481" : "#955b80",
+                color: Number(monthTotal) >= 0 ? "#468481" : "#955b80",
               }}
             >
               <AnimatedNumber prefix={"$"} n={Number(monthTotal)} />
