@@ -14,6 +14,7 @@ import {
 import DayChart from "../components/charts/dayChart/DayChart";
 import CalendarComponent from "../components/calendar/Calendar/CalendarComponent";
 import useData from "../hooks/useData";
+import AnimatedNumber from "../components/animatedNumber/AnimatedNumber";
 
 const Calendar = () => {
   // const test = sumBy(data, function (o) {
@@ -108,7 +109,7 @@ const Calendar = () => {
                 color: Number(monthTotal) > 0 ? "#468481" : "#955b80",
               }}
             >
-              ${monthTotal?.toFixed(2)}
+              <AnimatedNumber prefix={"$"} n={Number(monthTotal)} />
             </h2>
             <span>Return $ for the Month</span>
             <span>{getPipsForMonth(data)}</span>
