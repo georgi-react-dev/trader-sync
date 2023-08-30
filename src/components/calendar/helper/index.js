@@ -189,3 +189,19 @@ export const getMonthlyWeeklyProfits = (data) => {
 
   return weeklyProfits;
 };
+
+export const nthSum = (arr) => {
+  let sum = 0;
+  const arrr = [];
+  for (let i = 0; i < arr.length; i++) {
+    sum += +arr[i];
+    if ((i + 1) % 7 === 0) {
+      arrr.push(sum.toFixed(2));
+      sum = 0;
+    }
+  }
+  if (sum !== 0) {
+    arrr.push(sum.toFixed(2));
+  }
+  return arrr;
+};

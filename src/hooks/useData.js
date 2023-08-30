@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-const useData = (url, selectedDate) => {
+const useData = (selectedDate) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -19,10 +19,10 @@ const useData = (url, selectedDate) => {
         }
       );
       console.log({ REZULTS: response.data.trades });
-      //setSelectedDate(new Date(response.data.trades[0].trade_date));
+
       setData(response.data.trades);
     };
-    fetchData();
+    selectedDate && fetchData();
   }, [selectedDate]);
 
   return { data };
