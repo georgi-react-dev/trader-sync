@@ -22,7 +22,7 @@ export default function Root() {
               </li>
               <br />
               <li>
-                <Link onClick={logout}>Logout</Link>
+                <Link style={{color:"red"}}onClick={logout}>Logout</Link>
               </li>
             </ul>
           </nav>
