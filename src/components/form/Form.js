@@ -14,10 +14,10 @@ const Form = () => {
 
   const { register, login, user } = useAuth();
   console.log({ user });
-  const handleForm = () => {
+  const handleForm = async () => {
     console.log({ email, password, repeatPassword });
     if (option === 1 && email && password) {
-      if (login(email, password)) {
+      if (await login(email, password)) {
         navigate("/dashboard");
       }
     }

@@ -26,8 +26,9 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       console.log({ LOGIN: response });
-      setUser(email);
+      setUser(response.data.user.email);
       setToken(response.data.token);
+      return true;
     } catch (error) {
       console.error("Login failed:", error);
     }

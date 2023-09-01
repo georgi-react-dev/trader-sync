@@ -8,11 +8,11 @@ import {
 } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 const ProtectedRoute = ({ children }) => {
-  const email = useAuth();
-  console.log({ AUTHUSER: email });
+  const { user } = useAuth();
+  console.log({ AUTHUSER: user });
   const location = useLocation();
 
-  if (!email) {
+  if (!user) {
     return <Navigate to="/autentication" replace state={{ from: location }} />;
   }
 
