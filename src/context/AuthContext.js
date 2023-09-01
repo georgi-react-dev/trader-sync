@@ -9,6 +9,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [error, setError] = useState(null);
 
   const register = async (email, password) => {
     console.log({ email });
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error("Login failed:", error);
+      setError({ msg: "Login failed!" });
     }
   };
 
@@ -44,6 +46,8 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
+    error,
+    setError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { useAuth } from "./AuthProvider";
 // import { FormInput, FormButton } from "./formStyle";
 import { useNavigate } from "react-router";
@@ -12,12 +12,14 @@ const Form = () => {
   const [repeatPassword, setRepeatPassword] = useState(null);
   const navigate = useNavigate();
 
-  const { register, login, user } = useAuth();
+  const { register, login, user, error, setError } = useAuth();
   console.log({ user });
+
   const handleForm = async () => {
     console.log({ email, password, repeatPassword });
     if (option === 1 && email && password) {
       if (await login(email, password)) {
+        setError(null);
         navigate("/dashboard");
       }
     }
@@ -93,6 +95,7 @@ const Form = () => {
               onChange={(e) => setRepeatPassword(e.target.value)}
             />
           </div>
+          {error && <div style={{ color: "red" }}>{error.msg}</div>}
           <button
             className="btn-submit-form"
             type="submit"
