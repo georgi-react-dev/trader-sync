@@ -1,7 +1,7 @@
 // ElementMaker.js
 
 import React, { useState } from "react";
-import axios from "axios";
+import httpClient from "../../api/httpClient";
 // Create an ElementMaker component
 function EditableComponent({ apiUrl, initialContent, id }) {
   const [showInputEle, setShowInputEle] = useState(false);
@@ -11,7 +11,7 @@ function EditableComponent({ apiUrl, initialContent, id }) {
     try {
       // const sanitizedContent = DOMPurify.sanitize(content);
       // Make the API request with the sanitized content on blur
-      await axios.post(apiUrl, {
+      await httpClient.post(apiUrl, {
         description: content,
         id: id,
       });

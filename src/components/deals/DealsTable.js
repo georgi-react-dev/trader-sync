@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import Badge from "../tabs/Badge";
 import format from "date-fns/format";
 import intervalToDuration from "date-fns/intervalToDuration";
-import axios from "axios";
+import httpClient from "../../api/httpClient";
 import Modal from "../modal/Modal";
 import ZoomModalImage from "../modal/ZoomModalImage";
 import { getTradeDuration } from "../calendar/helper";
@@ -66,7 +66,7 @@ function DealsTable({ dealsInfo }) {
   //     const results = await Promise.all(
   //       dealsInfo.map(async (item) => {
   //         // Replace 'your_api_endpoint' with the actual API endpoint
-  //         const response = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getData", {
+  //         const response = await httpClient.get("/getData", {
   //           params: {
   //             positionID: item.position,
   //           },
@@ -84,7 +84,7 @@ function DealsTable({ dealsInfo }) {
   //     console.log({ results });
   //     setDealsData(results);
   //     // const deals = dealsInfo.map(async (item) => {
-  //     //   const res = await axios.get("https://doubtful-fawn-baseball-cap.cyclic.app/getImage", {
+  //     //   const res = await httpClient.get("/getImage", {
   //     //     params: {
   //     //       positionID: item.position,
   //     //     },
@@ -115,14 +115,11 @@ function DealsTable({ dealsInfo }) {
   const showImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/getImage",
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await httpClient.get("/getImage", {
+      params: {
+        positionID: positionID,
+      },
+    });
 
     setCurrentImage(res.data.image_path);
     setCurrentPosition(positionID);
@@ -131,14 +128,11 @@ function DealsTable({ dealsInfo }) {
   const removeImageByPositionID = async (positionID) => {
     // get image path
     setCurrentImage(null);
-    const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/removeImage",
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await httpClient.get("/removeImage", {
+      params: {
+        positionID: positionID,
+      },
+    });
   };
 
   const showZoomedImage = (positionId, url) => {
@@ -223,7 +217,7 @@ function DealsTable({ dealsInfo }) {
                       <>
                         <img
                           src={
-                            "https://doubtful-fawn-baseball-cap.cyclic.app/uploads/" + item.image_path
+                            "/uploads/" + item.image_path
                           }
                           alt={"img"}
                           style={{ height: "30px" }}
@@ -235,7 +229,7 @@ function DealsTable({ dealsInfo }) {
                 </td>
                 {/* <td>
                   <EditableComponent
-                    apiUrl={"https://doubtful-fawn-baseball-cap.cyclic.app/updateDescription"}
+                    apiUrl={"/updateDescription"}
                     initialContent={item.description}
                     positionId={item.position_id}
                   />

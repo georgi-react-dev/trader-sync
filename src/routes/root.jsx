@@ -8,7 +8,7 @@ export default function Root() {
           <nav>
             <ul>
             <li>
-                <Link to={`/`}>Dashboard</Link>
+                <Link to={`/dashboard`}>Dashboard</Link>
               </li>
               <li>
                 <Link to={`/calendar`}>Calendar</Link>

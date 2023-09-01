@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import httpClient from "../api/httpClient";
+import { useAuth } from "../context/AuthContext";
 const useBalance = (url, selectedDate) => {
   const [balance, setBalance] = useState(null);
-
+  const { token } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       // Replace 'your_api_endpoint' with the actual API endpoint
-      const response = await axios.get(
-        "https://doubtful-fawn-baseball-cap.cyclic.app/accountInfo"
-      );
+      const response = await httpClient.get("/accountInfo", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log({ REZULTS22222: response.data });
       //setSelectedDate(new Date(response.data.trades[0].trade_date));
       setBalance(response.data.balance);
     };
     fetchData();
-  }, [selectedDate]);
+  }, [selectedDate, token]);
 
   return { balance };
 };

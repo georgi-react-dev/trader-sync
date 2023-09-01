@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef } from "react";
-import axios from "axios";
+import httpClient from "../../api/httpClient";
 import {
   FaEye,
   FaPencilAlt,
@@ -14,14 +14,11 @@ const PositionEditingInfo = ({ positionId }) => {
 
   const fileInputRef = createRef();
   const fetchImages = async (positionID) => {
-    const res = await axios.get(
-      "https://doubtful-fawn-baseball-cap.cyclic.app/getPositionImages",
-      {
-        params: {
-          positionID: positionID,
-        },
-      }
-    );
+    const res = await httpClient.get("/getPositionImages", {
+      params: {
+        positionID: positionID,
+      },
+    });
     if (res.data.length > 0) {
       setImages(res.data);
     } else {
@@ -32,14 +29,11 @@ const PositionEditingInfo = ({ positionId }) => {
   const removeImage = async (image) => {
     var result = window.confirm("Are you sure you want to delete image?");
     if (result) {
-      const res = await axios.get(
-        "https://doubtful-fawn-baseball-cap.cyclic.app/removeImage",
-        {
-          params: {
-            image,
-          },
-        }
-      );
+      const res = await httpClient.get("/removeImage", {
+        params: {
+          image,
+        },
+      });
 
       console.log({ REMOVE: res });
       if (res.data.removed) {
@@ -66,8 +60,8 @@ const PositionEditingInfo = ({ positionId }) => {
       formData.append("image", file, positionID);
       formData.append("positionID", positionID);
 
-      axios
-        .post("https://doubtful-fawn-baseball-cap.cyclic.app/save", formData, {
+      httpClient
+        .post("/save", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -164,9 +158,7 @@ const PositionEditingInfo = ({ positionId }) => {
                   <img src={item.image} alt="" style={{ width: "100%" }} />
                 </div>
                 <EditableComponent
-                  apiUrl={
-                    "https://doubtful-fawn-baseball-cap.cyclic.app/updateDescription"
-                  }
+                  apiUrl={"/updateDescription"}
                   initialContent={item.description}
                   id={item.id}
                 />

@@ -9,24 +9,57 @@ import Root from "./routes/root";
 import ErrorPage from "./components/error/error-page";
 import Calendar from "./routes/Calendar";
 import Trend from "./components/trend/Trend";
-
+import Form from "./components/form/Form";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/protected/ProtectedRoute";
 const router = createBrowserRouter([
+  {
+    path: "/autentication",
+    element: <Form />,
+    errorElement: <ErrorPage />,
+    // children: [
+    //   {
+    //     path: "/",
+    //     element: <Root />,
+    //   },
+    //   {
+    //     path: "calendar",
+    //     element: <Calendar />,
+    //   },
+    //   {
+    //     path: "trend-analize",
+    //     element: <Trend />,
+    //   },
+    // ],
+  },
   {
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
-        element: <Dashboard />,
+        path: "/dashboard",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "calendar",
-        element: <Calendar />,
+        element: (
+          <ProtectedRoute>
+            <Calendar />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "trend-analize",
-        element: <Trend />,
+        element: (
+          <ProtectedRoute>
+            <Trend />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -34,7 +67,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
 

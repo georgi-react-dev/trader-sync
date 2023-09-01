@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import axios from "axios";
+import httpClient from "../../api/httpClient";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 const UploadButton = styled.button`
@@ -92,8 +92,8 @@ export const UploadForm = ({ onUpload }) => {
           });
         }
 
-        axios
-          .post(`https://doubtful-fawn-baseball-cap.cyclic.app/accountInfo`, {
+        httpClient
+          .post(`/accountInfo`, {
             balance: balance,
           })
           .then((response) => {
@@ -103,8 +103,8 @@ export const UploadForm = ({ onUpload }) => {
             console.error("Error:", error);
           });
 
-        axios
-          .post(`https://doubtful-fawn-baseball-cap.cyclic.app/saveTrades`, {
+        httpClient
+          .post(`/saveTrades`, {
             tradesData: profitArr,
           })
           .then((response) => {
