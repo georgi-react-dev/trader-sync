@@ -34,7 +34,7 @@ const Calendar = () => {
   const [isBussinessDays, setIsBussinessDays] = useState(false);
 
   const [switchOn, setSwitchOn] = useState(false);
-
+  const { data: tradesData, loading } = useData(selectedDate);
   const handleSwitchToggle = (e) => {
     // setSwitchOn((prev) => !prev);
     setIsBussinessDays(e.target.checked);
@@ -101,39 +101,49 @@ const Calendar = () => {
           <DealsTable dealsInfo={dealsInfo} />
         </Modal>
       )}
-      <div style={{ display: "flex", gap: "2rem", justifyContent: "center" }}>
-        <div style={{ display: "flex", gap: "2rem" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <h2
+      {/* {loading && <h1>Loading</h1>} */}
+      {tradesData.length > 0 ? (
+        <div style={{ display: "flex", gap: "2rem", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "2rem" }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h2
+                style={{
+                  color: Number(monthTotal) >= 0 ? "#468481" : "#955b80",
+                }}
+              >
+                <AnimatedNumber prefix={"$"} n={Number(monthTotal)} />
+              </h2>
+              <span>Return $ for the Month</span>
+              <span>{getPipsForMonth(data)}</span>
+              <span>{getTradesForMonth(data)}</span>
+            </div>
+
+            <div
               style={{
-                color: Number(monthTotal) >= 0 ? "#468481" : "#955b80",
+                width: "435px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <AnimatedNumber prefix={"$"} n={Number(monthTotal)} />
-            </h2>
-            <span>Return $ for the Month</span>
-            <span>{getPipsForMonth(data)}</span>
-            <span>{getTradesForMonth(data)}</span>
-          </div>
+              <span>Week Days</span>
+              <SwitchButton on={switchOn} onClick={handleSwitchToggle} />
+              <span>Bussiness Days</span>
 
-          <div
-            style={{
-              width: "435px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <span>Week Days</span>
-            <SwitchButton on={switchOn} onClick={handleSwitchToggle} />
-            <span>Bussiness Days</span>
-
-            <button onClick={() => setShowGraphModal(true)}>Show Graph</button>
+              <button onClick={() => setShowGraphModal(true)}>
+                Show Graph
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <p>
+          No data for this period!
+          <br /> You can import trades from Your Dashbord!
+        </p>
+      )}
 
-      {selectedDate && (
+      {tradesData.length > 0 && selectedDate && (
         <div
           style={{
             display: "flex",

@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
-
+  const [refetch, setRefetch] = useState(false);
   const register = async (email, password) => {
     console.log({ email });
     console.log({ password });
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       console.log({ LOGIN: response });
-      setUser(response.data.user.email);
+      setUser(response.data.user);
       setToken(response.data.token);
       return true;
     } catch (error) {
@@ -48,6 +48,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     error,
     setError,
+    refetch,
+    setRefetch,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import httpClient from "../../api/httpClient";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 const UploadButton = styled.button`
   background: #123456;
   color: #fff;
@@ -13,6 +14,10 @@ const UploadButton = styled.button`
 `;
 
 export const UploadForm = ({ onUpload }) => {
+  const { user, setRefetch } = useAuth();
+
+  console.log({ UploadForm: user });
+
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -76,6 +81,7 @@ export const UploadForm = ({ onUpload }) => {
               // obj.swap = tds[12].replace(/<\/?td[^>]*>/g, "");
               // profitArr.push(obj);
               obj.position = tds[1].replace(/<\/?td[^>]*>/g, "");
+              obj.accountId = user.id;
               obj.symbol = tds[2].replace(/<\/?td[^>]*>/g, "");
               obj.type = tds[3].replace(/<\/?td[^>]*>/g, "");
               obj.volume = tds[5].replace(/<\/?td[^>]*>/g, "");
@@ -94,10 +100,12 @@ export const UploadForm = ({ onUpload }) => {
 
         httpClient
           .post(`/accountInfo`, {
+            accountId: user.id,
             balance: balance,
           })
           .then((response) => {
             console.log("Response from server:", response.data);
+            setRefetch(true);
           })
           .catch((error) => {
             console.error("Error:", error);

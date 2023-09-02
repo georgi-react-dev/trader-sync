@@ -40,10 +40,12 @@ function Dashboard() {
         <h1>Dashboard</h1>
         <UploadForm />
       </DashboardHeader>
-      <DashBoardItem>
-        <div>Net P&L</div>
-        {!balance ? null : <span className="balance">${balance}</span>}
-      </DashBoardItem>
+      {balance && (
+        <DashBoardItem>
+          <div>Net P&L</div>
+          {!balance ? null : <span className="balance">${balance}</span>}
+        </DashBoardItem>
+      )}
     </div>
   );
 }

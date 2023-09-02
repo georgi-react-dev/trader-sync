@@ -8,7 +8,7 @@ export default function Root() {
     return (
       <>
         <div id="sidebar">
-          <h1>Forex Calendar</h1>
+          <h1>Trader Sync</h1>
           <nav>
             <ul>
             <li>

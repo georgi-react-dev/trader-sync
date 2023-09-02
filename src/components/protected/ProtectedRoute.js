@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
   console.log({ AUTHUSER: user });
   const location = useLocation();
 
-  if (!user) {
+  if (!user?.email) {
     return <Navigate to="/autentication" replace state={{ from: location }} />;
   }
 
