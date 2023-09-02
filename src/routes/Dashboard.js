@@ -2,6 +2,8 @@ import React from "react";
 import useBalance from "../hooks/useBalance";
 import { styled } from "styled-components";
 import { UploadForm } from "../components/form/UploadForm";
+import useData from "../hooks/useData";
+import YearChart from "../components/charts/YearChart/YearChart";
 
 export const DashboardHeader = styled.div`
   border-bottom: 1px solid #888;
@@ -33,7 +35,8 @@ const DashBoardItem = styled.div`
 
 function Dashboard() {
   const { balance } = useBalance();
-
+  const { data: tradesData, loading } = useData("all");
+  console.log({ tradesData });
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <DashboardHeader className="header">
@@ -46,6 +49,7 @@ function Dashboard() {
           {!balance ? null : <span className="balance">${balance}</span>}
         </DashBoardItem>
       )}
+      {tradesData.length > 0 && <YearChart data={tradesData} />}
     </div>
   );
 }

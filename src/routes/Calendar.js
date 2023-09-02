@@ -230,7 +230,7 @@ const Calendar = () => {
       )}
       {showGraphModal && (
         <Modal setShowModal={setShowGraphModal}>
-          <DayChart date={selectedDate} data={data} />
+          <DayChart data={data} />
         </Modal>
       )}
 

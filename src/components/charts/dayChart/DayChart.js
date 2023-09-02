@@ -20,7 +20,7 @@ ChartJS.register(
   Legend
 );
 
-function DayChart({ date, data }) {
+function DayChart({ data }) {
   // win / loss status,
   const getDatesByStatus = (data, status) => {
     return data.reduce((item, value) => {
