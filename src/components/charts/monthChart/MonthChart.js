@@ -9,9 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import faker from "faker";
-import { getMonthDeals } from "../../calendar/helper";
-import { getYearMonths } from "./helper/index";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -22,8 +20,8 @@ ChartJS.register(
 );
 
 function MonthChart({ year, data }) {
-  const allMonths = getYearMonths(year, data);
-  console.log({ allMonths });
+  const arr = Array.from({ length: 12 }, (_, i) => i + 1);
+
   //get year trades
   const yearTrades = (year, data) => {
     return data.reduce((item, value) => {
@@ -36,45 +34,46 @@ function MonthChart({ year, data }) {
   };
 
   const getDataSeparatedByMonth = (year) => {
-    // console.log({ getDataSeparatedByMonthDATA: data });
-    console.log({ YEARTRADES: yearTrades(year, data) });
     const recordsByMonth = yearTrades(year, data).reduce((result, record) => {
-      const yearMonth = record.year_month_date;
-      if (!result[yearMonth]) {
-        result[yearMonth] = [];
+      const yearMonth = record.year_month_date.split(".")[1];
+      if (!result[parseInt(yearMonth)]) {
+        result[parseInt(yearMonth)] = [];
       }
 
-      result[yearMonth].push(record);
+      result[parseInt(yearMonth)].push(record);
 
       return result;
     }, {});
 
-    // allMonths.forEach((element) => {
-    //   monthsData = data.reduce((item, value) => {
-    //     const month = value.year_month_date?.split(".")[1];
-    //     if (year === value.year_month_date?.split(".")[0]) {
-    //       if (element === month) {
-    //         item.push(value);
-    //       }
-    //     }
+    const combinedObj = {};
+    const obj = {
+      1: 1,
+      2: 2,
+      3: 3,
+      4: 4,
+      5: 5,
+      6: 6,
+      7: 7,
+      8: 8,
+      9: 9,
+      10: 10,
+      11: 11,
+      12: 12,
+    };
+    for (const key in obj) {
+      console.log({ OBJE: key });
+      if (recordsByMonth[key]) {
+        combinedObj[key] = recordsByMonth[key];
+      } else {
+        combinedObj[key] = [];
+      }
+    }
 
-    //     return item;
-    //   }, []);
-    // });
-
-    console.log({ recordsByMonth });
-    return recordsByMonth;
-    // return Object.values(recordsByMonth).filter((item) => item.length > 0);
-    // return new Set(Array.from(monthsData));
+    return Object.values(combinedObj);
   };
 
-  console.log({
-    getDataSeparatedByMonth: getDataSeparatedByMonth(year),
-  });
-  //   console.log({ TRTTRT: getMonthData(year, data) });
   const getDatesByStatus = (data, status) => {
-    console.log({ DATATATA: Object.values(data) });
-    const da = Object.values(data).map((item) => {
+    return data.map((item) => {
       return item.reduce((item, value) => {
         if (status === "win") {
           if (value.profit >= 0) {
@@ -89,34 +88,18 @@ function MonthChart({ year, data }) {
         return item;
       }, []);
     });
-    // const datata = Object.values(data).reduce((item, value) => {
-    //   if (status === "win") {
-    //     if (value.profit >= 0) {
-    //       item.push(value);
-    //     }
-    //   } else {
-    //     if (value.profit < 0) {
-    //       item.push(value);
-    //     }
-    //   }
-
-    //   return item;
-    // }, []);
-
-    console.log({ tazi: da });
-    return da;
   };
   const datesByStatusWin = (year) =>
     getDatesByStatus(getDataSeparatedByMonth(year), "win");
   const datesByStatusLoss = (year) =>
     getDatesByStatus(getDataSeparatedByMonth(year), "loss");
 
-  const labels = getYearMonths(year, data).map((item) => {
-    return Intl.DateTimeFormat("en", { month: "short" }).format(new Date(item));
+  const labels = arr.map((item) => {
+    return Intl.DateTimeFormat("en", { month: "short" }).format(
+      new Date(item.toString())
+    );
   });
-  const test = datesByStatusWin(year);
 
-  console.log({ test: test });
   const options = {
     plugins: {
       title: {
@@ -124,7 +107,7 @@ function MonthChart({ year, data }) {
           size: 20,
         },
         display: true,
-        text: "By Months",
+        text: year,
       },
     },
     subtitle: {
@@ -153,6 +136,7 @@ function MonthChart({ year, data }) {
       {
         label: "Win",
         data: datesByStatusWin(year).map((item) => item.length),
+        // data: datesByStatusWin(year).map((item) => item.length),
 
         backgroundColor: "#4fa397",
         width: "10px",
