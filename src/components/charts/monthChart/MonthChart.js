@@ -111,7 +111,9 @@ function MonthChart({ year, data }) {
   const datesByStatusLoss = (year) =>
     getDatesByStatus(getDataSeparatedByMonth(year), "loss");
 
-  const labels = getYearMonths(year, data);
+  const labels = getYearMonths(year, data).map((item) => {
+    return Intl.DateTimeFormat("en", { month: "short" }).format(new Date(item));
+  });
   const test = datesByStatusWin(year);
 
   console.log({ test: test });
