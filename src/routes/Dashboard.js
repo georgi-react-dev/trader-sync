@@ -55,7 +55,7 @@ function Dashboard() {
           {!balance ? null : <span className="balance">${balance}</span>}
         </DashBoardItem>
       )}
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", gap: "1rem" }}>
         {getYears(tradesData).map((year) => {
           return (
             <div
@@ -63,7 +63,7 @@ function Dashboard() {
               style={{
                 border: "1px solid #333",
                 borderRadius: "5px",
-                padding: "5px",
+                padding: "5px 10px",
                 cursor: "pointer",
               }}
               onClick={() => setYear(year)}
