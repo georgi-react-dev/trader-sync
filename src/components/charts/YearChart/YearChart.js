@@ -11,6 +11,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import faker from "faker";
 import { getMonthDeals } from "../../calendar/helper";
+import { getYears } from "./helper/index";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,50 +22,15 @@ ChartJS.register(
 );
 
 function YearChart({ data }) {
-  // win / loss status,
-  console.log({ YearChart: data });
-
-  const getYears = (data) => {
-    return data.reduce((item, value) => {
-      //   console.log({ item });
-      const year = value.year_month_date?.split(".")[0];
-      //   if (status === "win") {
-      //     if (value.profit > 0) {
-      item.push(year);
-      //     }
-      //   } else {
-      //     if (value.profit < 0) {
-      //       item.push(value);
-      //     }
-      //   }
-
-      return item;
-    }, []);
-  };
   const getYearData = (year, data) => {
     return data.reduce((item, value) => {
-      //   console.log({ item });
       if (year === value.year_month_date?.split(".")[0]) {
         item.push(value);
       }
-      //   const year = value.year_month_date?.split(".")[0];
-      //   if (status === "win") {
-      //     if (value.profit > 0) {
-
-      //     }
-      //   } else {
-      //     if (value.profit < 0) {
-      //       item.push(value);
-      //     }
-      //   }
 
       return item;
     }, []);
   };
-
-  console.log({ getYearData: getYearData("2021", data) });
-
-  console.log({ getYears: new Set(getYears(data)) });
 
   const getDatesByStatus = (data, status) => {
     console.log({ DATATATA: data });
@@ -87,14 +53,7 @@ function YearChart({ data }) {
   const datesByStatusLoss = (year) =>
     getDatesByStatus(getYearData(year, data), "loss");
 
-  //   console.log("==============WIN===============");
-  //   console.table(datesByStatusWin);
-
-  //   console.log("==============LOSS===============");
-
-  //   console.table(datesByStatusLoss);
-  console.table(datesByStatusWin("2021"));
-  const labels = Array.from(new Set(getYears(data)));
+  const labels = getYears(data);
   const test = labels.map((year, index) => datesByStatusWin(year).length);
 
   console.log({ test });
@@ -146,7 +105,16 @@ function YearChart({ data }) {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", height: "30rem" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        height: "30rem",
+        border: " 1px solid #696969",
+        paddingLeft: "5px",
+        paddingTop: "5px",
+      }}
+    >
       <Bar options={options} data={dataArr} />
     </div>
   );
