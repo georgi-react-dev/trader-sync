@@ -6,6 +6,7 @@ import useData from "../hooks/useData";
 import YearChart from "../components/charts/YearChart/YearChart";
 import { getYears } from "../components/charts/YearChart/helper/index";
 import MonthChart from "../components/charts/monthChart/MonthChart";
+import ClipLoader from "react-spinners/ClipLoader";
 export const DashboardHeader = styled.div`
   border-bottom: 1px solid #888;
   display: flex;
@@ -35,8 +36,9 @@ const DashBoardItem = styled.div`
 `;
 
 function Dashboard() {
-  const { balance } = useBalance();
-  const { data: tradesData, loading } = useData("all");
+  const { balance, loading } = useBalance();
+
+  const { data: tradesData, loading: loaddingTradesData } = useData("all");
   console.log({ tradesData });
   const [year, setYear] = useState();
   const showMonthChartByYear = (year) => {
@@ -49,12 +51,23 @@ function Dashboard() {
         <h1>Dashboard</h1>
         <UploadForm />
       </DashboardHeader>
-      {balance && (
-        <DashBoardItem>
-          <div>Net P&L</div>
-          {!balance ? null : <span className="balance">${balance}</span>}
-        </DashBoardItem>
-      )}
+
+      <DashBoardItem>
+        {loading ? (
+          <ClipLoader
+            color={"#36d7b7"}
+            loading={loading}
+            size={25}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        ) : (
+          <>
+            <div>Net P&L</div>
+            <span className="balance">${balance}</span>
+          </>
+        )}
+      </DashBoardItem>
       <div style={{ display: "flex", gap: "1rem" }}>
         {getYears(tradesData).map((year) => {
           return (
