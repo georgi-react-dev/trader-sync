@@ -1,18 +1,10 @@
-import {
-  Routes,
-  Route,
-  NavLink,
-  Navigate,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { Navigate, useLocation } from "react-router-dom";
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
-  console.log({ AUTHUSER: user });
+  const token = localStorage.getItem("token");
+
   const location = useLocation();
 
-  if (!user?.email) {
+  if (!token) {
     return <Navigate to="/autentication" replace state={{ from: location }} />;
   }
 

@@ -32,8 +32,8 @@ const useData = (selectedDate = null) => {
       setData(response.data.trades);
       setLoading(false);
     };
-    selectedDate && fetchData();
-  }, [selectedDate, user.id]);
+    user && selectedDate && fetchData();
+  }, [selectedDate, user]);
 
   return { data, loading };
 };

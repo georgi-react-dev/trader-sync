@@ -1,5 +1,5 @@
 // client/src/context/AuthContext.js
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import httpClient from "../api/httpClient";
 
 const AuthContext = createContext();
@@ -19,6 +19,16 @@ export const AuthProvider = ({ children }) => {
       password,
     });
   };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (token) {
+      setToken(token);
+    }
+    if (user) {
+      setUser(user);
+    }
+  }, [setToken, setUser]);
 
   const login = async (email, password) => {
     try {
@@ -29,6 +39,8 @@ export const AuthProvider = ({ children }) => {
       console.log({ LOGIN: response });
       setUser(response.data.user);
       setToken(response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("token", response.data.token);
       return true;
     } catch (error) {
       console.error("Login failed:", error);
@@ -37,7 +49,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
+    setToken(null);
   };
 
   const value = {
@@ -46,6 +61,8 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
+    setToken,
+    setUser,
     error,
     setError,
     refetch,

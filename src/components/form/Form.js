@@ -12,8 +12,13 @@ const Form = () => {
   const [repeatPassword, setRepeatPassword] = useState(null);
   const navigate = useNavigate();
 
-  const { register, login, user, error, setError } = useAuth();
+  const { register, login, user, token, error, setError } = useAuth();
   console.log({ user });
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
   const handleForm = async () => {
     console.log({ email, password, repeatPassword });

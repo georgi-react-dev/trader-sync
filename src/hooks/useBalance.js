@@ -21,8 +21,8 @@ const useBalance = (url, selectedDate) => {
       setBalance(response.data.balance);
       setRefetch(false);
     };
-    fetchData();
-  }, [selectedDate, token, user?.id, refetch, setRefetch]);
+    token && user && fetchData();
+  }, [selectedDate, token, user, refetch, setRefetch]);
 
   return { balance };
 };
