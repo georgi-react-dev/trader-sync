@@ -11,6 +11,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import faker from "faker";
 import { getMonthDeals } from "../../calendar/helper";
+import { sumBy } from "lodash";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -45,7 +46,7 @@ function DayChart({ data }) {
 
   //   console.log("==============LOSS===============");
 
-  console.table(datesByStatusLoss);
+  console.log({ datesByStatusWin });
 
   const options = {
     plugins: {
@@ -59,10 +60,33 @@ function DayChart({ data }) {
           month: "long",
         }),
       },
+      tooltip: {
+        callbacks: {
+          afterLabel: function (context) {
+            console.log({ context });
+
+            // if (label) {
+            //   label += ": ";
+            // }
+            let label =
+              "Profit " +
+              new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(context.raw.profit);
+
+            return label;
+          },
+        },
+      },
     },
     subtitle: {
       display: true,
       text: "Custom Chart Subtitle",
+    },
+    parsing: {
+      xAxisKey: "label",
+      yAxisKey: "length",
     },
     responsive: true,
     barPercentage: 0.7,
@@ -82,28 +106,81 @@ function DayChart({ data }) {
 
   const labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
+  let test = labels
+    .map(
+      (_, index) =>
+        datesByStatusWin.filter((item) => {
+          return new Date(item.trade_date).getDay() === index + 1;
+        })
+
+      //
+    )
+    .map((item) => {
+      console.log({ item });
+
+      return {
+        length: item.length,
+        profit: sumBy(item, (o) => {
+          return Number(o.profit);
+        }),
+      };
+    });
+
+  //   const test2 = test.map((item) => {
+  //     console.log({ item });
+
+  //     return {
+  //       length: item.length,
+  //       profit: sumBy(item, (o) => {
+  //         return Number(o.profit);
+  //       }),
+  //     };
+  //   });
+  console.log({ test });
   const dataArr = {
-    labels,
+    // labels,
     datasets: [
       {
         label: "Win",
-        data: labels.map(
-          (_, index) =>
+        data: labels
+          .map((_, index) =>
             datesByStatusWin.filter((item) => {
               return new Date(item.trade_date).getDay() === index + 1;
-            }).length
-        ),
+            })
+          )
+          .map((item, index) => {
+            console.log({ item });
+
+            return {
+              length: item.length,
+              profit: sumBy(item, (o) => {
+                return Number(o.profit);
+              }),
+              label: labels[index],
+            };
+          }),
         backgroundColor: "#4fa397",
         width: "10px",
       },
       {
         label: "Loss",
-        data: labels.map(
-          (_, index) =>
+        data: labels
+          .map((_, index) =>
             datesByStatusLoss.filter((item) => {
               return new Date(item.trade_date).getDay() === index + 1;
-            }).length
-        ),
+            })
+          )
+          .map((item, index) => {
+            console.log({ item });
+
+            return {
+              length: item.length,
+              profit: sumBy(item, (o) => {
+                return Number(o.profit);
+              }),
+              label: labels[index],
+            };
+          }),
         backgroundColor: "#e58599",
       },
     ],

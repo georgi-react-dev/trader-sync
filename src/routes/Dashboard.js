@@ -40,7 +40,7 @@ function Dashboard() {
 
   const { data: tradesData, loading: loaddingTradesData } = useData("all");
   console.log({ tradesData });
-  const [year, setYear] = useState();
+  const [year, setYear] = useState("All");
   const showMonthChartByYear = (year) => {
     alert(year);
   };
@@ -69,6 +69,19 @@ function Dashboard() {
         )}
       </DashBoardItem>
       <div style={{ display: "flex", gap: "1rem" }}>
+        <div
+          key={year}
+          style={{
+            border: "1px solid #333",
+            borderRadius: "5px",
+            padding: "5px 10px",
+            cursor: "pointer",
+          }}
+          onClick={() => setYear("All")}
+        >
+          All
+        </div>
+
         {getYears(tradesData).map((year) => {
           return (
             <div
@@ -86,8 +99,10 @@ function Dashboard() {
           );
         })}
       </div>
-      {tradesData.length > 0 && !year && <YearChart data={tradesData} />}
-      {year && <MonthChart year={year} data={tradesData} />}
+      {tradesData.length > 0 && year === "All" && (
+        <YearChart data={tradesData} />
+      )}
+      {year !== "All" && <MonthChart year={year} data={tradesData} />}
     </div>
   );
 }

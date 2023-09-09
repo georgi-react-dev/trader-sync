@@ -9,9 +9,8 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import faker from "faker";
-import { getMonthDeals } from "../../calendar/helper";
 import { getYears } from "./helper/index";
+import { sumBy } from "lodash";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -34,7 +33,7 @@ function YearChart({ data }) {
 
   const getDatesByStatus = (data, status) => {
     console.log({ DATATATA: data });
-    return data.reduce((item, value) => {
+    const res = data.reduce((item, value) => {
       if (status === "win") {
         if (value.profit >= 0) {
           item.push(value);
@@ -47,6 +46,15 @@ function YearChart({ data }) {
 
       return item;
     }, []);
+
+    console.log({ res });
+
+    return {
+      length: res.length,
+      profit: sumBy(res, function (o) {
+        return Number(o.profit);
+      }),
+    };
   };
   const datesByStatusWin = (year) =>
     getDatesByStatus(getYearData(year, data), "win");
@@ -54,7 +62,12 @@ function YearChart({ data }) {
     getDatesByStatus(getYearData(year, data), "loss");
 
   const labels = getYears(data);
-  const test = labels.map((year, index) => datesByStatusWin(year).length);
+  const test = labels
+    .map((year, index) => datesByStatusWin(year))
+    .map((item, index) => {
+      return { ...item, label: labels[index] };
+    });
+  //   const test2 = test;
 
   console.log({ test });
   const options = {
@@ -66,6 +79,29 @@ function YearChart({ data }) {
         display: true,
         text: "By Years",
       },
+      tooltip: {
+        callbacks: {
+          afterLabel: function (context) {
+            console.log({ context });
+
+            // if (label) {
+            //   label += ": ";
+            // }
+            let label =
+              "Profit " +
+              new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(context.raw.profit);
+
+            return label;
+          },
+        },
+      },
+    },
+    parsing: {
+      xAxisKey: "label",
+      yAxisKey: "length",
     },
     subtitle: {
       display: true,
@@ -88,17 +124,24 @@ function YearChart({ data }) {
   };
 
   const dataArr = {
-    labels,
     datasets: [
       {
         label: "Win",
-        data: labels.map((year, index) => datesByStatusWin(year).length),
+        data: labels
+          .map((year) => datesByStatusWin(year))
+          .map((item, index) => {
+            return { ...item, label: labels[index] };
+          }),
         backgroundColor: "#4fa397",
         width: "10px",
       },
       {
         label: "Loss",
-        data: labels.map((year, index) => datesByStatusLoss(year).length),
+        data: labels
+          .map((year) => datesByStatusLoss(year))
+          .map((item, index) => {
+            return { ...item, label: labels[index] };
+          }),
         backgroundColor: "#e58599",
       },
     ],
@@ -109,7 +152,7 @@ function YearChart({ data }) {
       style={{
         display: "flex",
         justifyContent: "center",
-        height: "30rem",
+        maxHeight: "28rem",
         border: " 1px solid #696969",
         paddingLeft: "5px",
         paddingTop: "5px",

@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { sumBy } from "lodash";
 
 ChartJS.register(
   CategoryScale,
@@ -73,7 +75,7 @@ function MonthChart({ year, data }) {
   };
 
   const getDatesByStatus = (data, status) => {
-    return data.map((item) => {
+    const res = data.map((item) => {
       return item.reduce((item, value) => {
         if (status === "win") {
           if (value.profit >= 0) {
@@ -88,6 +90,16 @@ function MonthChart({ year, data }) {
         return item;
       }, []);
     });
+    // ;
+    return res.map((item) => {
+      console.log({ ITTTTTT: item });
+      return {
+        length: item.length,
+        profit: sumBy(item, function (o) {
+          return Number(o.profit);
+        }),
+      };
+    });
   };
   const datesByStatusWin = (year) =>
     getDatesByStatus(getDataSeparatedByMonth(year), "win");
@@ -100,20 +112,65 @@ function MonthChart({ year, data }) {
     );
   });
 
+  const test = datesByStatusLoss(year).map((item, index) => {
+    return { ...item, label: labels[index] };
+  });
+  console.log({ test });
   const options = {
     plugins: {
       title: {
         font: {
           size: 20,
+          weight: "normal",
         },
+        color: "#fff",
         display: true,
         text: year,
       },
+      tooltip: {
+        callbacks: {
+          //   label: function (context) {
+          //     console.log({ context });
+          //     let label = context.dataset.label || "";
+
+          //     if (label) {
+          //       label += ": ";
+          //     }
+          //     if (context.parsed.y !== null) {
+          //       label += new Intl.NumberFormat("en-US", {
+          //         style: "currency",
+          //         currency: "USD",
+          //       }).format(context.parsed.y);
+          //     }
+          //     return label;
+          //   },
+          afterLabel: function (context) {
+            console.log({ context });
+
+            // if (label) {
+            //   label += ": ";
+            // }
+            let label =
+              "Profit " +
+              new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(context.raw.profit);
+
+            return label;
+          },
+        },
+      },
+    },
+    parsing: {
+      xAxisKey: "label",
+      yAxisKey: "length",
     },
     subtitle: {
       display: true,
       text: "Custom Chart Subtitle",
     },
+
     responsive: true,
     barPercentage: 0.7,
     scales: {
@@ -131,19 +188,26 @@ function MonthChart({ year, data }) {
   };
 
   const dataArr = {
-    labels,
+    // labels,
     datasets: [
       {
         label: "Win",
-        data: datesByStatusWin(year).map((item) => item.length),
-        // data: datesByStatusWin(year).map((item) => item.length),
+        // data: datesByStatusWin(year).map((item) => {
+        //   //   console.log({ item });
+        //   return item.length;
+        // }),
+        data: datesByStatusWin(year).map((item, index) => {
+          return { ...item, label: labels[index] };
+        }),
 
         backgroundColor: "#4fa397",
         width: "10px",
       },
       {
         label: "Loss",
-        data: datesByStatusLoss(year).map((item) => item.length),
+        data: datesByStatusLoss(year).map((item, index) => {
+          return { ...item, label: labels[index] };
+        }),
         backgroundColor: "#e58599",
       },
     ],
@@ -154,7 +218,7 @@ function MonthChart({ year, data }) {
       style={{
         display: "flex",
         justifyContent: "center",
-        height: "30rem",
+        maxHeight: "28rem",
         border: " 1px solid #696969",
         paddingLeft: "5px",
         paddingTop: "5px",
