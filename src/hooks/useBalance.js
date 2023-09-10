@@ -12,7 +12,7 @@ const useBalance = (url, selectedDate) => {
       // Replace 'your_api_endpoint' with the actual API endpoint
       try {
         const response = await httpClient.get(
-          "/accountInfo",
+          "/getAccountBalance",
 
           {
             headers: { Authorization: `Bearer ${token}` },

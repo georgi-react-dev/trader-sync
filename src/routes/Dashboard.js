@@ -14,6 +14,11 @@ export const DashboardHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-bottom: 1rem;
+
+  h1 {
+    // position: relative;
+    // left: 1rem;
+  }
 `;
 
 const DashBoardItem = styled.div`

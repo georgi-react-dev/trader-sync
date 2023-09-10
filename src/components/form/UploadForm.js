@@ -37,9 +37,12 @@ export const UploadForm = ({ onUpload }) => {
       reader.onload = () => {
         const fileContent = reader.result;
         const regex = /<tr bgcolor(.*) align="right">([\s\S]*?)<\/tr>/g;
+
         const tableRows = fileContent.match(regex);
+
         const dateAndTimeArr = [];
         const profitArr = [];
+        const balanceArr = [];
         const regexBalance =
           /<td (.*)>Balance:<\/td>\s+<td (.*)<b>(.*)<\/b><\/td>/gm;
 
@@ -60,6 +63,12 @@ export const UploadForm = ({ onUpload }) => {
             const tdRegex = /<td[^>]*>(.*?)<\/td>/g;
             const tds = row.match(tdRegex);
             console.log({ tds });
+            if (tds && tds.length === 15) {
+              var balanceObj = {};
+              balanceObj.deal = tds[1].replace(/<\/?td[^>]*>/g, "");
+              balanceObj.balance = tds[13].replace(/<\/?td[^>]*>/g, "");
+              balanceArr.push(balanceObj);
+            }
             if (tds && tds.length === 14) {
               dateAndTimeArr.push(
                 tds[0]
@@ -99,7 +108,7 @@ export const UploadForm = ({ onUpload }) => {
         }
 
         httpClient
-          .post(`/accountInfo`, {
+          .post(`/setAccountBalance`, {
             accountId: user.id,
             balance: balance,
           })
@@ -110,21 +119,32 @@ export const UploadForm = ({ onUpload }) => {
           .catch((error) => {
             console.error("Error:", error);
           });
-
-        httpClient
-          .post(`/saveTrades`, {
-            tradesData: profitArr,
-          })
-          .then((response) => {
-            console.log("Response from server:", response.data);
-            navigate("/calendar");
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+        // httpClient
+        //   .post(`/accountBalanceData`, {
+        //     accountId: user.id,
+        //     balanceData: balanceArr,
+        //   })
+        //   .then((response) => {
+        //     console.log("Response from server:", response.data);
+        //     setRefetch(true);
+        //   })
+        //   .catch((error) => {
+        //     console.error("Error:", error);
+        //   });
+        // httpClient
+        //   .post(`/saveTrades`, {
+        //     tradesData: profitArr,
+        //   })
+        //   .then((response) => {
+        //     console.log("Response from server:", response.data);
+        //     navigate("/calendar");
+        //   })
+        //   .catch((error) => {
+        //     console.error("Error:", error);
+        //   });
         console.log("First Array:");
         const dates = [...new Set(dateAndTimeArr)];
-        console.log("Second Array:", profitArr);
+        console.log("balance Array:", balanceArr);
         const yearMonthObject = {};
 
         for (const date of dates) {
