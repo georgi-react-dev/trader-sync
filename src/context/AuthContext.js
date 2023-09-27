@@ -2,18 +2,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import httpClient from "../api/httpClient";
 
-const AuthContext = createContext();
-
-export const useAuth = () => useContext(AuthContext);
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
   const [refetch, setRefetch] = useState(false);
+
   const register = async (email, password) => {
-    console.log({ email });
-    console.log({ password });
     await httpClient.post("/register", {
       email,
       password,
@@ -36,7 +33,6 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      console.log({ LOGIN: response });
       setUser(response.data.user);
       setToken(response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -70,4 +66,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must use AuthProvider");
+  }
+  return context;
 };

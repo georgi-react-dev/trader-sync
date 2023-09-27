@@ -32,7 +32,6 @@ function YearChart({ data }) {
   };
 
   const getDatesByStatus = (data, status) => {
-    console.log({ DATATATA: data });
     const res = data.reduce((item, value) => {
       if (status === "win") {
         if (value.profit >= 0) {
@@ -46,8 +45,6 @@ function YearChart({ data }) {
 
       return item;
     }, []);
-
-    console.log({ res });
 
     return {
       length: res.length,
@@ -69,7 +66,6 @@ function YearChart({ data }) {
     });
   //   const test2 = test;
 
-  console.log({ test });
   const options = {
     plugins: {
       title: {
@@ -82,8 +78,6 @@ function YearChart({ data }) {
       tooltip: {
         callbacks: {
           afterLabel: function (context) {
-            console.log({ context });
-
             // if (label) {
             //   label += ": ";
             // }

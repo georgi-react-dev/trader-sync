@@ -46,8 +46,6 @@ function DayChart({ data }) {
 
   //   console.log("==============LOSS===============");
 
-  console.log({ datesByStatusWin });
-
   const options = {
     plugins: {
       title: {
@@ -63,8 +61,6 @@ function DayChart({ data }) {
       tooltip: {
         callbacks: {
           afterLabel: function (context) {
-            console.log({ context });
-
             // if (label) {
             //   label += ": ";
             // }
@@ -116,8 +112,6 @@ function DayChart({ data }) {
       //
     )
     .map((item) => {
-      console.log({ item });
-
       return {
         length: item.length,
         profit: sumBy(item, (o) => {
@@ -136,7 +130,6 @@ function DayChart({ data }) {
   //       }),
   //     };
   //   });
-  console.log({ test });
   const dataArr = {
     // labels,
     datasets: [
@@ -149,8 +142,6 @@ function DayChart({ data }) {
             })
           )
           .map((item, index) => {
-            console.log({ item });
-
             return {
               length: item.length,
               profit: sumBy(item, (o) => {
@@ -171,8 +162,6 @@ function DayChart({ data }) {
             })
           )
           .map((item, index) => {
-            console.log({ item });
-
             return {
               length: item.length,
               profit: sumBy(item, (o) => {

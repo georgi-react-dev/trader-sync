@@ -63,7 +63,6 @@ function MonthChart({ year, data }) {
       12: 12,
     };
     for (const key in obj) {
-      console.log({ OBJE: key });
       if (recordsByMonth[key]) {
         combinedObj[key] = recordsByMonth[key];
       } else {
@@ -92,7 +91,6 @@ function MonthChart({ year, data }) {
     });
     // ;
     return res.map((item) => {
-      console.log({ ITTTTTT: item });
       return {
         length: item.length,
         profit: sumBy(item, function (o) {
@@ -115,7 +113,6 @@ function MonthChart({ year, data }) {
   const test = datesByStatusLoss(year).map((item, index) => {
     return { ...item, label: labels[index] };
   });
-  console.log({ test });
   const options = {
     plugins: {
       title: {
@@ -145,8 +142,6 @@ function MonthChart({ year, data }) {
           //     return label;
           //   },
           afterLabel: function (context) {
-            console.log({ context });
-
             // if (label) {
             //   label += ": ";
             // }

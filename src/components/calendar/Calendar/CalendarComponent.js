@@ -16,8 +16,6 @@ function CalendarComponent({
     data.length && setData(data);
   }, [data, setData]);
 
-  console.log({ DATATA: data });
-
   const getBusinessDays = (year, month) => {
     const businessDays = [];
     const date = new Date(year, month, 1);

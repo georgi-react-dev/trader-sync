@@ -13,6 +13,7 @@ export const getTradeDuration = (start, end) => {
   // years: 0;
 
   let string = "";
+  // @ts-ignore
   Object.entries(obj).map((value, key, arr) => {
     if (value[1] > 0 && value[0] !== "seconds") {
       string += value[0].toUpperCase() + ": " + value[1] + " ";
@@ -72,6 +73,7 @@ export const getPipsForDay = (currentDay, data) => {
 };
 
 export const getPipsForMonth = (data) => {
+  // @ts-ignore
   const monthPips = (data, key) => {
     return data.reduce((acc, value) => {
       // if (value.trade_date === key) {
@@ -89,7 +91,9 @@ export const getPipsForMonth = (data) => {
 };
 
 export const getTradesForMonth = (data) => {
+  // @ts-ignore
   const monthTrades = (data, key) => {
+    // @ts-ignore
     return data.reduce((acc, value) => {
       // if (value.trade_date === key) {
 
@@ -156,6 +160,7 @@ export const getWeekDays = (isBussinessDays) => {
   ];
   let daysToShow = isBussinessDays ? bussinessDays : daysOfWeek;
   const days = daysToShow.map((day) => (
+    // @ts-ignore
     <div className="test" style={{ color: "#fff", width: "150px" }} key={day}>
       {day}
     </div>
@@ -168,11 +173,13 @@ export const getMonthlyWeeklyProfits = (data) => {
   // Sort the data array by date in ascending order
 
   // Sort the data array by date in ascending order
+  // @ts-ignore
   data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const startDate = new Date(data[0].date);
   const endDate = new Date(data[data.length - 1].date);
   const numWeeks =
+    // @ts-ignore
     Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)) + 1;
 
   const weeklyProfits = new Array(numWeeks).fill(0);
@@ -181,6 +188,7 @@ export const getMonthlyWeeklyProfits = (data) => {
     const currentDate = new Date(data[i].date);
     const currentProfit = Number(data[i].profit);
     const weekIndex = Math.floor(
+      // @ts-ignore
       (currentDate - startDate) / (7 * 24 * 60 * 60 * 1000)
     );
 

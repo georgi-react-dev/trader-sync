@@ -13,11 +13,10 @@ const UploadButton = styled.button`
   cursor: pointer;
 `;
 
-export const UploadForm = ({ onUpload }) => {
+export const UploadForm = () => {
   const { user, setRefetch } = useAuth();
 
-  console.log({ UploadForm: user });
-
+  // @ts-ignore
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -38,31 +37,30 @@ export const UploadForm = ({ onUpload }) => {
         const fileContent = reader.result;
         const regex = /<tr bgcolor(.*) align="right">([\s\S]*?)<\/tr>/g;
 
+        // @ts-ignore
         const tableRows = fileContent.match(regex);
 
         const dateAndTimeArr = [];
         const profitArr = [];
         const balanceArr = [];
+        // @ts-ignore
         const regexBalance =
           /<td (.*)>Balance:<\/td>\s+<td (.*)<b>(.*)<\/b><\/td>/gm;
 
         const pattern =
           /<td (.*)>Balance:<\/td>\s+<td colspan="2"><b>(.*?)<\/b><\/td>/;
+        // @ts-ignore
         const matches = fileContent.match(pattern);
 
         if (matches) {
-          console.log({ matches });
           const balanceValue = matches[2];
           balance = balanceValue;
-          console.log("Balance:", balanceValue);
         } else {
-          console.log("Balance not found");
         }
         if (tableRows) {
           tableRows.forEach((row) => {
             const tdRegex = /<td[^>]*>(.*?)<\/td>/g;
             const tds = row.match(tdRegex);
-            console.log({ tds });
             if (tds && tds.length === 15) {
               var balanceObj = {};
               balanceObj.deal = tds[1].replace(/<\/?td[^>]*>/g, "");
@@ -112,8 +110,8 @@ export const UploadForm = ({ onUpload }) => {
             accountId: user.id,
             balance: balance,
           })
+          // @ts-ignore
           .then((response) => {
-            console.log("Response from server:", response.data);
             setRefetch(true);
           })
           .catch((error) => {
@@ -131,20 +129,19 @@ export const UploadForm = ({ onUpload }) => {
         //   .catch((error) => {
         //     console.error("Error:", error);
         //   });
-        // httpClient
-        //   .post(`/saveTrades`, {
-        //     tradesData: profitArr,
-        //   })
-        //   .then((response) => {
-        //     console.log("Response from server:", response.data);
-        //     navigate("/calendar");
-        //   })
-        //   .catch((error) => {
-        //     console.error("Error:", error);
-        //   });
-        console.log("First Array:");
+        httpClient
+          .post(`/saveTrades`, {
+            tradesData: profitArr,
+          })
+          // @ts-ignore
+          .then((response) => {
+            navigate("/calendar");
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+        // @ts-ignore
         const dates = [...new Set(dateAndTimeArr)];
-        console.log("balance Array:", balanceArr);
         const yearMonthObject = {};
 
         for (const date of dates) {
@@ -160,7 +157,6 @@ export const UploadForm = ({ onUpload }) => {
           }
         }
 
-        console.log({ yearMonthObject });
         // onUpload({ date: [...new Set(dateAndTimeArr)], data: profitArr });
       };
       reader.readAsText(file);

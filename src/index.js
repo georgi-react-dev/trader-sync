@@ -12,62 +12,8 @@ import Trend from "./components/trend/Trend";
 import Form from "./components/form/Form";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/protected/ProtectedRoute";
-const router = createBrowserRouter([
-  {
-    path: "/autentication",
-    element: <Form />,
-    errorElement: <ErrorPage />,
-    // children: [
-    //   {
-    //     path: "/",
-    //     element: <Root />,
-    //   },
-    //   {
-    //     path: "calendar",
-    //     element: <Calendar />,
-    //   },
-    //   {
-    //     path: "trend-analize",
-    //     element: <Trend />,
-    //   },
-    // ],
-  },
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <Root />
-      </ProtectedRoute>
-    ),
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "/dashboard",
-        element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "calendar",
-        element: (
-          <ProtectedRoute>
-            <Calendar />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "trend-analize",
-        element: (
-          <ProtectedRoute>
-            <Trend />
-          </ProtectedRoute>
-        ),
-      },
-    ],
-  },
-]);
+import routesConfig from "./routesConfig";
+export const router = createBrowserRouter(routesConfig);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

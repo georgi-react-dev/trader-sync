@@ -11,9 +11,8 @@ const Form = () => {
   const [password, setPassword] = useState(null);
   const [repeatPassword, setRepeatPassword] = useState(null);
   const navigate = useNavigate();
-
+  const [fieldsError, setFieldsError] = useState(null);
   const { register, login, user, token, error, setError } = useAuth();
-  console.log({ user });
   useEffect(() => {
     if (token) {
       navigate("/dashboard");
@@ -21,7 +20,9 @@ const Form = () => {
   }, [token, navigate]);
 
   const handleForm = async () => {
-    console.log({ email, password, repeatPassword });
+    if (!email || !password) {
+      setFieldsError(true);
+    }
     if (option === 1 && email && password) {
       if (await login(email, password)) {
         setError(null);
@@ -50,12 +51,14 @@ const Form = () => {
         </header>
         <ul className="options">
           <li
+            data-testid="sign-in-label"
             className={option === 1 ? "active" : ""}
             onClick={() => setOption(1)}
           >
             Sign in
           </li>
           <li
+            data-testid="sign-up-label"
             className={option === 2 ? "active" : ""}
             onClick={() => setOption(2)}
           >
@@ -76,6 +79,7 @@ const Form = () => {
             <input
               id="email"
               name="email"
+              aria-label="email"
               type="email"
               placeholder="E-mail"
               required
@@ -84,6 +88,7 @@ const Form = () => {
             <input
               id="password"
               name="password"
+              aria-label="password"
               type="password"
               placeholder="Password"
               required={option === 1 || option === 2 ? true : false}
@@ -100,11 +105,17 @@ const Form = () => {
               onChange={(e) => setRepeatPassword(e.target.value)}
             />
           </div>
+          {fieldsError && (
+            <div data-testid="fields-error" style={{ color: "red" }}>
+              Fields are required
+            </div>
+          )}
           {error && <div style={{ color: "red" }}>{error.msg}</div>}
           <button
             className="btn-submit-form"
             type="submit"
             onClick={() => handleForm()}
+            data-testid={`sign-${option === 1 ? "in" : "up"}-btn`}
           >
             {option === 1
               ? "Sign in"

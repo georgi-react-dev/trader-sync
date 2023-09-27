@@ -1,12 +1,7 @@
 import React, { useState, useEffect, createRef } from "react";
 import httpClient from "../../api/httpClient";
-import {
-  FaEye,
-  FaPencilAlt,
-  FaFileUpload,
-  FaTimesCircle,
-} from "react-icons/fa";
-import Modal from "../modal/Modal";
+import { FaTimesCircle } from "react-icons/fa";
+
 import EditableComponent from "../editable/EditableComponent";
 
 const PositionEditingInfo = ({ positionId }) => {
@@ -35,7 +30,6 @@ const PositionEditingInfo = ({ positionId }) => {
         },
       });
 
-      console.log({ REMOVE: res });
       if (res.data.removed) {
         fetchImages(positionId);
       }
@@ -67,7 +61,6 @@ const PositionEditingInfo = ({ positionId }) => {
           },
         })
         .then((response) => {
-          console.log("Response from server:", response.data);
           fetchImages(positionId);
         })
         .catch((error) => {

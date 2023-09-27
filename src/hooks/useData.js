@@ -27,7 +27,6 @@ const useData = (selectedDate = null) => {
       const response = await httpClient.get("/getTrades", {
         params,
       });
-      console.log({ REZULTS: response.data.trades });
 
       setData(response.data.trades);
       setLoading(false);

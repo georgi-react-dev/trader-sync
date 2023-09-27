@@ -44,7 +44,6 @@ function Dashboard() {
   const { balance, loading } = useBalance();
 
   const { data: tradesData, loading: loaddingTradesData } = useData("all");
-  console.log({ tradesData });
   const [year, setYear] = useState("All");
   const showMonthChartByYear = (year) => {
     alert(year);
@@ -53,7 +52,7 @@ function Dashboard() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <DashboardHeader className="header">
-        <h1>Dashboard</h1>
+        <h1 data-testid="title">Dashboard</h1>
         <UploadForm />
       </DashboardHeader>
 
