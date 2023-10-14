@@ -43,6 +43,39 @@ const PositionEditingInfo = ({ positionId }) => {
     fileInputRef.current.click();
   };
 
+  const handleOnPaste = (evt, positionId) => {
+    console.log({ positionId });
+
+    const clipboardItems = evt.clipboardData.items;
+    const items = [].slice.call(clipboardItems).filter(function (item) {
+      // Filter the image items only
+      return item.type.indexOf("image") !== -1;
+    });
+    if (items.length === 0) {
+      return;
+    }
+
+    const item = items[0];
+    // Get the blob of image
+    const blob = item.getAsFile();
+
+    const formData = new FormData();
+    formData.append("image", blob, positionId);
+    formData.append("positionID", positionId);
+
+    httpClient
+      .post("/save", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        fetchImages(positionId);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
   const handleFileChange = (e, positionID) => {
     // console.log({ positionID });
 
@@ -79,39 +112,24 @@ const PositionEditingInfo = ({ positionId }) => {
         color: "#123456",
       }}
     >
-      <div>
+      <div
+        onPaste={(e) => handleOnPaste(e, positionId)}
+        style={{ border: "1px solid #888", padding: "1rem" }}
+      >
         <input
           type="file"
           style={{ display: "none" }}
           ref={fileInputRef}
           onChange={(e) => handleFileChange(e, positionId)}
         />
-
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            alignItems: "center",
-            justifyContent: "center",
-            // border: ".5px solid #888",
-
-            padding: "0.5rem",
-          }}
+        <kbd class="key">Ctrl</kbd> + <kbd class="key">V</kbd> in this window or{" "}
+        <button
+          style={{ background: "#123456", color: "#fff", cursor: "pointer" }}
+          type="button"
+          onClick={() => handleButtonClick()}
         >
-          <button
-            style={{ background: "#123456", color: "#fff" }}
-            type="button"
-            onClick={() => handleButtonClick()}
-          >
-            Upload
-          </button>
-          {/* <FaFileUpload
-            size={"1.2rem"}
-            cursor="pointer"
-            color="lightblue"
-            
-          /> */}
-        </div>
+          Upload
+        </button>
       </div>
       {images.length === 0 ? (
         <h1>There are no images!</h1>

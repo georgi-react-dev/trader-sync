@@ -29,13 +29,17 @@ const ModalContent = styled.div`
 `;
 const ModalHeader = styled.div`
   text-align: right;
+  display: flex;
+  justify-content: space-between;
+  color: #123456;
 `;
 // Modal component
-const Modal = ({ setShowModal, children }) => {
+const Modal = ({ title, setShowModal, children }) => {
   return ReactDOM.createPortal(
     <Backdrop>
       <ModalContent>
         <ModalHeader>
+          <h2>{title}</h2>
           <FaTimesCircle
             cursor={"pointer"}
             color="gray"

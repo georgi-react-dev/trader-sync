@@ -16,6 +16,7 @@ import {
 import DealDetails from "./DealDetails";
 import EditableComponent from "../editable/EditableComponent";
 import PositionEditingInfo from "../positionEditingInfo/PositionEditingInfo";
+import RiskRewardRatioSelect from "../riskRewardRatio/RiskRewardRatioSelect";
 const TableContainer = styled.div`
   table {
     width: 100%;
@@ -144,6 +145,16 @@ function DealsTable({ dealsInfo }) {
     setCurrentPositionId(positionId);
     setShowImageModal(true);
   };
+
+  const setRiskRewardRatio = async (ratio, positionId) => {
+    const res = await httpClient.post("/setTradeRiskRewardRatio", {
+      ratio,
+      positionId,
+    });
+
+    console.log({ res });
+  };
+
   return (
     <TableContainer>
       <table
@@ -161,7 +172,7 @@ function DealsTable({ dealsInfo }) {
             <th>lot size</th>
             <th>pips</th>
             <th>Images</th>
-
+            <th>Risk/Reward</th>
             <th>SL</th>
             <th>TP</th>
             <th>Open time</th>
@@ -240,6 +251,16 @@ function DealsTable({ dealsInfo }) {
                     positionId={item.position_id}
                   />
                 </td> */}
+                <td>
+                  {Number(item.profit) > 0 ? (
+                    <RiskRewardRatioSelect
+                      ratio={item.risk_reward_ratio}
+                      onSetRiskRewardRatio={(ratio) =>
+                        setRiskRewardRatio(ratio, item.position_id)
+                      }
+                    />
+                  ) : null}
+                </td>
                 <td style={{ color: "#c36969" }}>{item.stop_lost}</td>
                 <td style={{ color: "#468481" }}>{item.take_profit}</td>
                 <td>{format(new Date(item.time_open), "HH:mm:ss")}</td>
@@ -290,7 +311,7 @@ function DealsTable({ dealsInfo }) {
         </Modal>
       )}
       {showImageModal && (
-        <Modal setShowModal={setShowImageModal}>
+        <Modal title="Upload images" setShowModal={setShowImageModal}>
           {/* <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={imageUrl} alt={"img"} style={{ height: "80vh" }} />
           </div> */}
