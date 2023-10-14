@@ -60,6 +60,7 @@ const ImageWrapper = styled.div`
 function DealsTable({ dealsInfo }) {
   const [dealsData, setDealsData] = useState(dealsInfo);
   const [currentPositionId, setCurrentPositionId] = useState(null);
+  const [currentItem, setCurrentItem] = useState(null);
   const fileInputRefs = dealsInfo.map(() => createRef());
 
   // useEffect(() => {
@@ -141,8 +142,9 @@ function DealsTable({ dealsInfo }) {
     setCurrentPositionId(positionId);
     setShowImageModal(true);
   };
-  const showImagesModal = (positionId) => {
-    setCurrentPositionId(positionId);
+  const showImagesModal = (item) => {
+    setCurrentPositionId(item.positionId);
+    setCurrentItem(item);
     setShowImageModal(true);
   };
 
@@ -183,7 +185,7 @@ function DealsTable({ dealsInfo }) {
         </thead>
         <tbody>
           {dealsData?.map((item, index) => {
-            console.log({ item });
+            // console.log({ item });
             return (
               <tr key={item.position_id}>
                 <td>{item.position_id}</td>
@@ -213,7 +215,7 @@ function DealsTable({ dealsInfo }) {
                     size={"1.2rem"}
                     cursor="pointer"
                     color="lightblue"
-                    onClick={() => showImagesModal(item.position_id)}
+                    onClick={() => showImagesModal(item)}
                   />
                   {/* <ImageWrapper style={{ position: "relative" }}>
                     {!currentImage && item.image_path && (
@@ -315,7 +317,10 @@ function DealsTable({ dealsInfo }) {
           {/* <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={imageUrl} alt={"img"} style={{ height: "80vh" }} />
           </div> */}
-          <PositionEditingInfo positionId={currentPositionId} />
+          <PositionEditingInfo
+            item={currentItem}
+            positionId={currentPositionId}
+          />
         </Modal>
       )}
     </TableContainer>

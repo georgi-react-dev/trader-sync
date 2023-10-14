@@ -3,8 +3,9 @@ import httpClient from "../../api/httpClient";
 import { FaTimesCircle } from "react-icons/fa";
 
 import EditableComponent from "../editable/EditableComponent";
+import axios from "axios";
 
-const PositionEditingInfo = ({ positionId }) => {
+const PositionEditingInfo = ({ item, positionId }) => {
   const [images, setImages] = useState([]);
 
   const fileInputRef = createRef();
@@ -101,6 +102,56 @@ const PositionEditingInfo = ({ positionId }) => {
         });
     }
   };
+
+  const handleGenerateImage = (item) => {
+    console.log({ item });
+
+    // httpClient.post("");
+    var data = JSON.stringify({
+      width: 700,
+      height: 400,
+      symbol: "FX:EURUSD",
+      theme: "dark",
+      interval: "1m",
+      timezone: "Europe/Istanbul",
+      range: {
+        from: "2023-10-13T12:23:39+03:00",
+        to: "2023-10-13T16:23:39+03:00",
+      },
+      drawings: [
+        {
+          name: "Long Position",
+          input: {
+            startDatetime: "2023-10-13T13:23:39+03:00",
+            endDatetime: "2023-10-13T15:24:39+03:00",
+            entryPrice: 1.05235,
+            targetPrice: 1.05327,
+            stopPrice: 1.0521,
+          },
+        },
+      ],
+    });
+
+    var config = {
+      method: "post",
+      url: "https://api.chart-img.com/v2/tradingview/advanced-chart",
+
+      headers: {
+        "x-api-key": "arVuf2oDKu6KnpcMvyQLcaCqZGNwwVPn2rHZyhKh",
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <div
       style={{
@@ -129,6 +180,14 @@ const PositionEditingInfo = ({ positionId }) => {
           onClick={() => handleButtonClick()}
         >
           Upload
+        </button>
+        or{" "}
+        <button
+          style={{ background: "#123456", color: "#fff", cursor: "pointer" }}
+          type="button"
+          onClick={() => handleGenerateImage(item)}
+        >
+          Generate image
         </button>
       </div>
       {images.length === 0 ? (
