@@ -143,7 +143,7 @@ function DealsTable({ dealsInfo }) {
     setShowImageModal(true);
   };
   const showImagesModal = (item) => {
-    setCurrentPositionId(item.positionId);
+    setCurrentPositionId(item.position_id);
     setCurrentItem(item);
     setShowImageModal(true);
   };
