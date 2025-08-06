@@ -33,6 +33,7 @@ export const UploadForm = () => {
     if (file) {
       const reader = new FileReader();
       let balance = "";
+      let totalNetProfit = "";
       reader.onload = () => {
         const fileContent = reader.result;
         const regex = /<tr bgcolor(.*) align="right">([\s\S]*?)<\/tr>/g;
@@ -56,6 +57,15 @@ export const UploadForm = () => {
           const balanceValue = matches[2];
           balance = balanceValue;
         } else {
+        }
+        const totalNetProfitPattern =
+          /<td (.*)>Total Net Profit:<\/td>\s+<td (.*)><b>(.*?)<\/b><\/td>/;
+        const matches1 = fileContent.match(totalNetProfitPattern);
+        if (matches1) {
+          // const balanceValue = matches[2];
+          // balance = balanceValue;
+          console.log({ totalNetProfitPattern: matches1 });
+          totalNetProfit = matches1[3];
         }
         if (tableRows) {
           tableRows.forEach((row) => {
@@ -98,7 +108,10 @@ export const UploadForm = () => {
               obj.timeOpen = tds[0].replace(/<\/?td[^>]*>/g, "");
               obj.timeClose = tds[9].replace(/<\/?td[^>]*>/g, "");
               obj.endPrice = tds[10].replace(/<\/?td[^>]*>/g, "");
-              obj.profit = tds[13].replace(/<\/?td[^>]*>/g, "");
+              obj.profit = tds[13]
+                .replace(/<\/?td[^>]*>/g, "")
+                .replace(/\s+/g, "")
+                .trim();
               obj.swap = tds[12].replace(/<\/?td[^>]*>/g, "");
               profitArr.push(obj);
             }
@@ -109,6 +122,7 @@ export const UploadForm = () => {
           .post(`/setAccountBalance`, {
             accountId: user.id,
             balance: balance,
+            net_profit: totalNetProfit,
           })
           // @ts-ignore
           .then((response) => {

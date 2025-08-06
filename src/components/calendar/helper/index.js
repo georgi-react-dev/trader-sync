@@ -43,7 +43,7 @@ export const getDayDealsProfit = (currentDay, data) => {
   const dayProfit = (data, key) => {
     return data.reduce((acc, value) => {
       if (value.trade_date === key) {
-        acc += +value.profit;
+        acc += +value.profit.replace(/\s+/g, "").trim();
       }
       return acc;
     }, 0);
@@ -59,7 +59,9 @@ export const getPipsForDay = (currentDay, data) => {
   const pips = (data, key) => {
     return data.reduce((acc, value) => {
       if (value.trade_date === key) {
-        const pips = (value.profit / value.volume) * 0.1;
+        const pips =
+          (value.profit.replace(/^\s+|\s+$|\s+(?=\s)/g, "") / value.volume) *
+          0.1;
         acc += pips;
       }
       return acc;
@@ -75,9 +77,15 @@ export const getPipsForDay = (currentDay, data) => {
 export const getPipsForMonth = (data) => {
   // @ts-ignore
   const monthPips = (data, key) => {
+    console.log({ data });
+
     return data.reduce((acc, value) => {
       // if (value.trade_date === key) {
-      const pips = (value.profit / value.volume) * 0.1;
+      console.log({ profit: value.profit.replace(/\s+/g, "").trim() });
+      const pips =
+        (value.profit.replace(/\s+/g, "").trim() / value.volume.split("/")[0]) *
+        0.1;
+      console.log({ pips });
       acc += pips;
       // }
       return acc;
@@ -85,6 +93,7 @@ export const getPipsForMonth = (data) => {
   };
 
   const profit = monthPips(data);
+  // console.log({ profit });
   if (!profit) return null;
   //format(new Date(year, month, day), "yyyy.MM.dd");
   return `Pips: ${profit.toFixed(2)} `;

@@ -41,37 +41,110 @@ const DashBoardItem = styled.div`
 `;
 
 function Dashboard() {
-  const { balance, loading } = useBalance();
+  const { balance, totalNetProfit, loading } = useBalance();
 
   const { data: tradesData, loading: loaddingTradesData } = useData("all");
   const [year, setYear] = useState("All");
   const showMonthChartByYear = (year) => {
     alert(year);
   };
-
+  const swap =
+    Math.round(
+      tradesData.reduce((acc, num) => Number(acc) + Number(num.swap), 0) * 100
+    ) / 100;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <DashboardHeader className="header">
         <h1 data-testid="title">Dashboard</h1>
         <UploadForm />
       </DashboardHeader>
-
-      <DashBoardItem>
-        {loading ? (
-          <ClipLoader
-            color={"#36d7b7"}
-            loading={loading}
-            size={25}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        ) : (
-          <>
-            <div>Net P&L</div>
-            <span className="balance">${balance}</span>
-          </>
-        )}
-      </DashBoardItem>
+      <div style={{ display: "flex", gap: "1rem" }}>
+        <DashBoardItem>
+          {loading ? (
+            <ClipLoader
+              color={"#36d7b7"}
+              loading={loading}
+              size={25}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            <>
+              <div>Net P&L</div>
+              <span className="balance">${balance}</span>
+            </>
+          )}
+        </DashBoardItem>
+        <DashBoardItem>
+          {loading ? (
+            <ClipLoader
+              color={"#36d7b7"}
+              loading={loading}
+              size={25}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            <>
+              <div>Total Net Profit</div>
+              <span
+                className="balance"
+                style={{
+                  color: totalNetProfit?.includes("-") ? "#e58599" : "#125c51",
+                }}
+              >
+                ${totalNetProfit}
+              </span>
+            </>
+          )}
+        </DashBoardItem>
+        <DashBoardItem>
+          {loading ? (
+            <ClipLoader
+              color={"#36d7b7"}
+              loading={loading}
+              size={25}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            <>
+              <div>Profit</div>
+              <span
+                className="balance"
+                style={{
+                  color: swap.toString()?.includes("-") ? "#e58599" : "#125c51",
+                }}
+              >
+                ${totalNetProfit - swap}
+              </span>
+            </>
+          )}
+        </DashBoardItem>
+        <DashBoardItem>
+          {loading ? (
+            <ClipLoader
+              color={"#36d7b7"}
+              loading={loading}
+              size={25}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            <>
+              <div>Swap</div>
+              <span
+                className="balance"
+                style={{
+                  color: swap.toString()?.includes("-") ? "#e58599" : "#125c51",
+                }}
+              >
+                ${swap}
+              </span>
+            </>
+          )}
+        </DashBoardItem>
+      </div>
       <div style={{ display: "flex", gap: "1rem" }}>
         <div
           key={year}

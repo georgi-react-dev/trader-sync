@@ -15,14 +15,17 @@ import DayChart from "../components/charts/dayChart/DayChart";
 import CalendarComponent from "../components/calendar/Calendar/CalendarComponent";
 import useData from "../hooks/useData";
 import AnimatedNumber from "../components/animatedNumber/AnimatedNumber";
-
+import { UploadForm } from "../components/form/UploadForm";
+import { useLocation } from "react-router-dom";
 const Calendar = () => {
+  const location = useLocation();
+  const date = location.state?.date;
   // const test = sumBy(data, function (o) {
   //   return Number(o.swap);
   // });
   // console.log({ test });
   // Initialize the calendar state with the current date
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(date ?? new Date());
   const [data, setData] = useState([]);
   const [weeksProfits, setWeeksProfits] = useState([]);
   const [monthTotal, setMonthTotal] = useState(null);
@@ -66,7 +69,7 @@ const Calendar = () => {
 
     setMonthTotal(
       sumBy(data, function (o) {
-        return Number(o.profit);
+        return Number(o.profit.replace(/\s+/g, "").trim());
       }) +
         sumBy(data, function (o) {
           return Number(o.swap);

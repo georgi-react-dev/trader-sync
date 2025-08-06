@@ -192,23 +192,38 @@ function DealsTable({ dealsInfo }) {
                 <td>{format(new Date(item.trade_date), "LLL dd, yyyy")}</td>
                 <td className="symbol">{item.symbol}</td>
                 <td>
-                  <Badge variant={Number(item.profit) > 0 ? "win" : "loss"} />
+                  <Badge
+                    variant={
+                      Number(item.profit.replace(/\s+/g, "").trim()) > 0
+                        ? "win"
+                        : "loss"
+                    }
+                  />
                 </td>
                 <td>
                   <Badge variant={item.type === "buy" ? "long" : "short"} />
                 </td>
                 <td
                   style={{
-                    color: Number(item.profit) > 0 ? "#468481" : "#c36969",
+                    color:
+                      Number(item.profit.replace(/\s+/g, "").trim()) > 0
+                        ? "#468481"
+                        : "#c36969",
                   }}
                 >
-                  {item.profit > 0
-                    ? `$${item.profit}`
-                    : `-$${Math.abs(item.profit).toFixed(2)}`}
+                  {item.profit.replace(/\s+/g, "").trim() > 0
+                    ? `$${item.profit.replace(/\s+/g, "").trim()}`
+                    : `-$${Math.abs(
+                        item.profit.replace(/\s+/g, "").trim()
+                      ).toFixed(2)}`}
                 </td>
                 <td>{item.volume}</td>
                 <td>
-                  {Math.abs((item.profit / item.volume) * 0.1).toFixed(2)}
+                  {Math.abs(
+                    (item.profit.replace(/\s+/g, "").trim() /
+                      item.volume.split("/")[0]) *
+                      0.1
+                  ).toFixed(2)}
                 </td>
                 <td>
                   <FaFileUpload
@@ -254,7 +269,7 @@ function DealsTable({ dealsInfo }) {
                   />
                 </td> */}
                 <td>
-                  {Number(item.profit) > 0 ? (
+                  {Number(item.profit.replace(/\s+/g, "").trim()) > 0 ? (
                     <RiskRewardRatioSelect
                       ratio={item.risk_reward_ratio}
                       onSetRiskRewardRatio={(ratio) =>
@@ -313,7 +328,10 @@ function DealsTable({ dealsInfo }) {
         </Modal>
       )}
       {showImageModal && (
-        <Modal title="Upload images" setShowModal={setShowImageModal}>
+        <Modal
+          title={`Upload images to ${currentPositionId}`}
+          setShowModal={setShowImageModal}
+        >
           {/* <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={imageUrl} alt={"img"} style={{ height: "80vh" }} />
           </div> */}

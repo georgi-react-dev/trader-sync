@@ -26,11 +26,11 @@ function DayChart({ data }) {
   const getDatesByStatus = (data, status) => {
     return data.reduce((item, value) => {
       if (status === "win") {
-        if (value.profit > 0) {
+        if (value.profit.replace(/\s+/g, "").trim() > 0) {
           item.push(value);
         }
       } else {
-        if (value.profit < 0) {
+        if (value.profit.replace(/\s+/g, "").trim() < 0) {
           item.push(value);
         }
       }
@@ -115,7 +115,7 @@ function DayChart({ data }) {
       return {
         length: item.length,
         profit: sumBy(item, (o) => {
-          return Number(o.profit);
+          return Number(o.profit.replace(/\s+/g, "").trim());
         }),
       };
     });
@@ -145,7 +145,7 @@ function DayChart({ data }) {
             return {
               length: item.length,
               profit: sumBy(item, (o) => {
-                return Number(o.profit);
+                return Number(o.profit.replace(/\s+/g, "").trim());
               }),
               label: labels[index],
             };
@@ -165,7 +165,7 @@ function DayChart({ data }) {
             return {
               length: item.length,
               profit: sumBy(item, (o) => {
-                return Number(o.profit);
+                return Number(o.profit.replace(/\s+/g, "").trim());
               }),
               label: labels[index],
             };

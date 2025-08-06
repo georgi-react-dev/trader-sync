@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,7 +23,7 @@ ChartJS.register(
 
 function MonthChart({ year, data }) {
   const arr = Array.from({ length: 12 }, (_, i) => i + 1);
-
+  const navigate = useNavigate();
   //get year trades
   const yearTrades = (year, data) => {
     return data.reduce((item, value) => {
@@ -156,6 +156,20 @@ function MonthChart({ year, data }) {
           },
         },
       },
+    },
+    onClick: (event, elements, chart) => {
+      if (elements.length > 0) {
+        const element = elements[0];
+        const datasetIndex = element.datasetIndex;
+        const index = element.index;
+
+        const label = chart.data.labels[index];
+        const value = chart.data.datasets[datasetIndex].data[index];
+
+        console.log(`You clicked on ${label}: ${JSON.stringify(value)}`);
+        const selectedDate = new Date(`${label} ${year}`); // or your specific date
+        navigate("/calendar", { state: { date: selectedDate } });
+      }
     },
     parsing: {
       xAxisKey: "label",

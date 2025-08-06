@@ -201,9 +201,11 @@ const PositionEditingInfo = ({ item, positionId }) => {
             flexWrap: "wrap",
             overflow: "scroll",
             height: "85vh",
+            paddingBottom: "5rem",
           }}
         >
           {images?.map((item) => {
+            console.log({ item: item.image });
             return (
               <div
                 style={{
@@ -225,7 +227,13 @@ const PositionEditingInfo = ({ item, positionId }) => {
                   >
                     <FaTimesCircle cursor="pointer" color="red" size="1.2rem" />
                   </span>
-                  <img src={item.image} alt="" style={{ width: "100%" }} />
+                  <img
+                    src={`http://localhost:3005/image/?megaLink=${encodeURIComponent(
+                      item.image
+                    )}`}
+                    alt=""
+                    style={{ width: "100%" }}
+                  />
                 </div>
                 <EditableComponent
                   apiUrl={"/updateDescription"}

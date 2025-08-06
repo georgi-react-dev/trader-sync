@@ -27,6 +27,15 @@ const useData = (selectedDate = null) => {
       const response = await httpClient.get("/getTrades", {
         params,
       });
+      const swap = response.data.trades.reduce(
+        (acc, num) => Number(acc) + Number(num.swap),
+        0
+      );
+      console.log({ swap: Math.round(swap * 100) / 100 });
+
+      console.log({
+        "response HERE": response.data.trades.map((item) => item),
+      });
 
       setData(response.data.trades);
       setLoading(false);
