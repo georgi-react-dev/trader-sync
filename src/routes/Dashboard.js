@@ -48,6 +48,12 @@ function Dashboard() {
   const showMonthChartByYear = (year) => {
     alert(year);
   };
+  const getProfit = (totalNetProfit, swap) => {
+    if (totalNetProfit > swap) {
+      return Math.round((totalNetProfit - swap) * 100) / 100;
+    }
+    return Number(totalNetProfit) + Number(swap);
+  };
   const swap =
     Math.round(
       tradesData.reduce((acc, num) => Number(acc) + Number(num.swap), 0) * 100
@@ -113,10 +119,10 @@ function Dashboard() {
               <span
                 className="balance"
                 style={{
-                  color: swap.toString()?.includes("-") ? "#e58599" : "#125c51",
+                  color: totalNetProfit < swap ? "#e58599" : "#125c51",
                 }}
               >
-                ${totalNetProfit - swap}
+                ${getProfit(totalNetProfit, swap)}
               </span>
             </>
           )}

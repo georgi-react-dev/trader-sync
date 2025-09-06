@@ -42,8 +42,8 @@ export const UploadForm = () => {
         const tableRows = fileContent.match(regex);
 
         const dateAndTimeArr = [];
-        const profitArr = [];
-        const balanceArr = [];
+        const positionsArr = [];
+        const dealsArr = [];
         // @ts-ignore
         const regexBalance =
           /<td (.*)>Balance:<\/td>\s+<td (.*)<b>(.*)<\/b><\/td>/gm;
@@ -62,61 +62,148 @@ export const UploadForm = () => {
           /<td (.*)>Total Net Profit:<\/td>\s+<td (.*)><b>(.*?)<\/b><\/td>/;
         const matches1 = fileContent.match(totalNetProfitPattern);
         if (matches1) {
-          // const balanceValue = matches[2];
-          // balance = balanceValue;
           console.log({ totalNetProfitPattern: matches1 });
           totalNetProfit = matches1[3];
         }
-        if (tableRows) {
-          tableRows.forEach((row) => {
-            const tdRegex = /<td[^>]*>(.*?)<\/td>/g;
-            const tds = row.match(tdRegex);
-            if (tds && tds.length === 15) {
-              var balanceObj = {};
-              balanceObj.deal = tds[1].replace(/<\/?td[^>]*>/g, "");
-              balanceObj.balance = tds[13].replace(/<\/?td[^>]*>/g, "");
-              balanceArr.push(balanceObj);
-            }
-            if (tds && tds.length === 14) {
-              dateAndTimeArr.push(
-                tds[0]
-                  .replace(/<\/?td[^>]*>/g, "")
-                  .match(/(\d{4}.\d{2}.\d{2})/g)[0]
-              );
-              var obj = {};
-              obj.date = tds[0]
-                .replace(/<\/?td[^>]*>/g, "")
-                .match(/(\d{4}.\d{2}.\d{2})/g)[0];
-              obj.trade_date = tds[0]
-                .replace(/<\/?td[^>]*>/g, "")
-                .match(/(\d{4}.\d{2}.\d{2})/g)[0];
-              obj.year_month_date = tds[0]
-                .replace(/<\/?td[^>]*>/g, "")
-                .match(/(\d{4}.\d{2})/g)[0];
+        tableRows.forEach((row) => {
+          const tdRegex = /<td[^>]*>(.*?)<\/td>/g;
+          const tds = row.match(tdRegex);
 
-              // obj.profit = tds[13].replace(/<\/?td[^>]*>/g, "");
-              // obj.swap = tds[12].replace(/<\/?td[^>]*>/g, "");
-              // profitArr.push(obj);
-              obj.position = tds[1].replace(/<\/?td[^>]*>/g, "");
-              obj.accountId = user.id;
-              obj.symbol = tds[2].replace(/<\/?td[^>]*>/g, "");
-              obj.type = tds[3].replace(/<\/?td[^>]*>/g, "");
-              obj.volume = tds[5].replace(/<\/?td[^>]*>/g, "");
-              obj.startPrice = tds[6].replace(/<\/?td[^>]*>/g, "");
-              obj.stopLost = tds[7].replace(/<\/?td[^>]*>/g, "");
-              obj.takeProfit = tds[8].replace(/<\/?td[^>]*>/g, "");
-              obj.timeOpen = tds[0].replace(/<\/?td[^>]*>/g, "");
-              obj.timeClose = tds[9].replace(/<\/?td[^>]*>/g, "");
-              obj.endPrice = tds[10].replace(/<\/?td[^>]*>/g, "");
-              obj.profit = tds[13]
+          if (tds && tds.length === 14) {
+            // --- Position row ---
+            dateAndTimeArr.push(
+              tds[0]
                 .replace(/<\/?td[^>]*>/g, "")
-                .replace(/\s+/g, "")
-                .trim();
-              obj.swap = tds[12].replace(/<\/?td[^>]*>/g, "");
-              profitArr.push(obj);
+                .match(/(\d{4}.\d{2}.\d{2})/g)[0]
+            );
+            var obj = {};
+            obj.date = tds[0]
+              .replace(/<\/?td[^>]*>/g, "")
+              .match(/(\d{4}.\d{2}.\d{2})/g)[0];
+            obj.trade_date = tds[0]
+              .replace(/<\/?td[^>]*>/g, "")
+              .match(/(\d{4}.\d{2}.\d{2})/g)[0];
+            obj.year_month_date = tds[0]
+              .replace(/<\/?td[^>]*>/g, "")
+              .match(/(\d{4}.\d{2})/g)[0];
+
+            obj.position = tds[1].replace(/<\/?td[^>]*>/g, "");
+            obj.accountId = user.id;
+            obj.symbol = tds[2].replace(/<\/?td[^>]*>/g, "");
+            obj.type = tds[3].replace(/<\/?td[^>]*>/g, "");
+            obj.volume = tds[5].replace(/<\/?td[^>]*>/g, "");
+            obj.startPrice = tds[6].replace(/<\/?td[^>]*>/g, "");
+            obj.stopLost = tds[7].replace(/<\/?td[^>]*>/g, "");
+            obj.takeProfit = tds[8].replace(/<\/?td[^>]*>/g, "");
+            obj.timeOpen = tds[0].replace(/<\/?td[^>]*>/g, "");
+            obj.timeClose = tds[9].replace(/<\/?td[^>]*>/g, "");
+            obj.endPrice = tds[10].replace(/<\/?td[^>]*>/g, "");
+            obj.currentBalance = tds[13];
+            obj.profit = tds[13]
+              .replace(/<\/?td[^>]*>/g, "")
+              .replace(/\s+/g, "")
+              .trim();
+            obj.swap = tds[12].replace(/<\/?td[^>]*>/g, "");
+            console.log({ obj });
+
+            positionsArr.push(obj);
+          }
+
+          if (tds && tds.length === 15) {
+            // --- Deal row ---
+            const dealObj = {};
+            dealObj.time = tds[0].replace(/<\/?td[^>]*>/g, "");
+            dealObj.dealId = tds[1].replace(/<\/?td[^>]*>/g, "");
+            dealObj.symbol = tds[2].replace(/<\/?td[^>]*>/g, "");
+            dealObj.type = tds[3].replace(/<\/?td[^>]*>/g, "");
+            dealObj.orderId = tds[7].replace(/<\/?td[^>]*>/g, ""); // <-- this matches position
+            dealObj.balance = tds[13].replace(/<\/?td[^>]*>/g, "").trim();
+
+            dealsArr.push(dealObj);
+          }
+        });
+
+        const profitArr = positionsArr.map((pos) => {
+          const posCloseTime = new Date(pos.timeClose);
+
+          // Find the last deal whose time <= position close time
+          let lastDealBalance = null;
+
+          for (const deal of dealsArr) {
+            const dealTime = new Date(deal.time);
+            if (dealTime <= posCloseTime) {
+              lastDealBalance = parseFloat(
+                deal.balance.replace(/\s+/g, "").replace(",", ".")
+              );
             }
-          });
-        }
+          }
+
+          return {
+            ...pos,
+            currentBalance: lastDealBalance,
+          };
+        });
+
+        console.log({ profitArr });
+
+        // if (tableRows) {
+        //   tableRows.forEach((row) => {
+        //     const tdRegex = /<td[^>]*>(.*?)<\/td>/g;
+        //     const tds = row.match(tdRegex);
+
+        //     if (tds && tds.length === 14) {
+        //       console.log({ tds_14: tds });
+
+        //       dateAndTimeArr.push(
+        //         tds[0]
+        //           .replace(/<\/?td[^>]*>/g, "")
+        //           .match(/(\d{4}.\d{2}.\d{2})/g)[0]
+        //       );
+        //       var obj = {};
+        //       obj.date = tds[0]
+        //         .replace(/<\/?td[^>]*>/g, "")
+        //         .match(/(\d{4}.\d{2}.\d{2})/g)[0];
+        //       obj.trade_date = tds[0]
+        //         .replace(/<\/?td[^>]*>/g, "")
+        //         .match(/(\d{4}.\d{2}.\d{2})/g)[0];
+        //       obj.year_month_date = tds[0]
+        //         .replace(/<\/?td[^>]*>/g, "")
+        //         .match(/(\d{4}.\d{2})/g)[0];
+
+        //       obj.position = tds[1].replace(/<\/?td[^>]*>/g, "");
+        //       obj.accountId = user.id;
+        //       obj.symbol = tds[2].replace(/<\/?td[^>]*>/g, "");
+        //       obj.type = tds[3].replace(/<\/?td[^>]*>/g, "");
+        //       obj.volume = tds[5].replace(/<\/?td[^>]*>/g, "");
+        //       obj.startPrice = tds[6].replace(/<\/?td[^>]*>/g, "");
+        //       obj.stopLost = tds[7].replace(/<\/?td[^>]*>/g, "");
+        //       obj.takeProfit = tds[8].replace(/<\/?td[^>]*>/g, "");
+        //       obj.timeOpen = tds[0].replace(/<\/?td[^>]*>/g, "");
+        //       obj.timeClose = tds[9].replace(/<\/?td[^>]*>/g, "");
+        //       obj.endPrice = tds[10].replace(/<\/?td[^>]*>/g, "");
+        //       obj.currentBalance = tds[13];
+        //       obj.profit = tds[13]
+        //         .replace(/<\/?td[^>]*>/g, "")
+        //         .replace(/\s+/g, "")
+        //         .trim();
+        //       obj.swap = tds[12].replace(/<\/?td[^>]*>/g, "");
+        //       console.log({ obj });
+
+        //       profitArr.push(obj);
+        //     }
+
+        //     if (tds && tds.length === 15) {
+        //       console.log({ tds_15: tds });
+        //       var balanceObj = {};
+        //       balanceObj.deal = tds[1].replace(/<\/?td[^>]*>/g, "");
+        //       balanceObj.balance = tds[13].replace(/<\/?td[^>]*>/g, "");
+        //       console.log({ balanceObj });
+
+        //       balanceArr.push(balanceObj);
+        //       console.log({ balanceArr });
+        //     }
+        //   });
+        // }
 
         httpClient
           .post(`/setAccountBalance`, {

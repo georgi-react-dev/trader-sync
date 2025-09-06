@@ -4,6 +4,7 @@ import Form from "./components/form/Form";
 import ProtectedRoute from "./components/protected/ProtectedRoute";
 import Trend from "./components/trend/Trend";
 import Calendar from "./routes/Calendar";
+import SizeCalculator from "./components/sizeCalculator/SizeCalculator";
 import Dashboard from "./routes/Dashboard";
 import Root from "./routes/root";
 
@@ -49,6 +50,14 @@ const routesConfig = [
         element: (
           <ProtectedRoute>
             <Calendar />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "size-calculator",
+        element: (
+          <ProtectedRoute>
+            <SizeCalculator />
           </ProtectedRoute>
         ),
       },

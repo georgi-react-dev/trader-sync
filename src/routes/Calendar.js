@@ -17,9 +17,12 @@ import useData from "../hooks/useData";
 import AnimatedNumber from "../components/animatedNumber/AnimatedNumber";
 import { UploadForm } from "../components/form/UploadForm";
 import { useLocation } from "react-router-dom";
+import useBalance from "../hooks/useBalance";
 const Calendar = () => {
   const location = useLocation();
   const date = location.state?.date;
+  const { balance } = useBalance();
+
   // const test = sumBy(data, function (o) {
   //   return Number(o.swap);
   // });
@@ -29,6 +32,7 @@ const Calendar = () => {
   const [data, setData] = useState([]);
   const [weeksProfits, setWeeksProfits] = useState([]);
   const [monthTotal, setMonthTotal] = useState(null);
+  const [monthPercentGain, setMonthPercentGain] = useState(null);
   const [weeksDealsCount, setWeeksDealsCount] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showGraphModal, setShowGraphModal] = useState(false);
@@ -38,6 +42,24 @@ const Calendar = () => {
 
   const [switchOn, setSwitchOn] = useState(false);
   const { data: tradesData, loading } = useData(selectedDate);
+  console.log({ tradesData: tradesData[tradesData.length - 1] });
+
+  useEffect(() => {
+    if (monthTotal) {
+      console.log({ monthTotal });
+      const balance =
+        tradesData[tradesData.length - 1].currentBalance - monthTotal;
+      const percentage = (Number(monthTotal) / parseFloat(balance)) * 100;
+      setMonthPercentGain(Math.round(percentage * 100) / 100);
+    }
+    // console.log({
+    //   monthTotal,
+    //   balance,
+    //   monthTotalNum: Number(monthTotal),
+    //   balanceNum: parseFloat(balance.replace(/\s/g, "")),
+    // });
+  }, [monthTotal, tradesData]);
+
   const handleSwitchToggle = (e) => {
     // setSwitchOn((prev) => !prev);
     setIsBussinessDays(e.target.checked);
@@ -111,10 +133,28 @@ const Calendar = () => {
             <div style={{ display: "flex", flexDirection: "column" }}>
               <h2
                 style={{
+                  display: "flex",
+                  gap: "0.5rem",
                   color: Number(monthTotal) >= 0 ? "#468481" : "#955b80",
                 }}
               >
-                <AnimatedNumber prefix={"$"} n={Number(monthTotal)} />
+                <AnimatedNumber prefix={"$"} n={Number(monthTotal)} />/
+                <span
+                  style={{
+                    color:
+                      Number(monthPercentGain) >= 0 ? "#468481" : "#955b80",
+                  }}
+                >
+                  {monthPercentGain} % -{" "}
+                  <span style={{ color: "#fff" }}>
+                    ${" "}
+                    {Math.round(
+                      (tradesData[tradesData.length - 1].currentBalance -
+                        monthTotal) *
+                        100
+                    ) / 100}
+                  </span>
+                </span>
               </h2>
               <span>Return $ for the Month</span>
               <span>{getPipsForMonth(data)}</span>

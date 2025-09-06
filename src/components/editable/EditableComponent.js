@@ -42,6 +42,7 @@ function EditableComponent({ apiUrl, initialContent, id }) {
                 textAlign: "left",
                 color: "black",
                 minWidth: "300px",
+                textWrap: "auto",
                 padding: "5px",
                 cursor: "pointer",
               }}

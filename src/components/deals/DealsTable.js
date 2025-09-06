@@ -177,6 +177,8 @@ function DealsTable({ dealsInfo }) {
             <th>Risk/Reward</th>
             <th>SL</th>
             <th>TP</th>
+            <th>start price</th>
+            <th>end price</th>
             <th>Open time</th>
             <th>Close time</th>
             <th>Duration</th>
@@ -280,6 +282,9 @@ function DealsTable({ dealsInfo }) {
                 </td>
                 <td style={{ color: "#c36969" }}>{item.stop_lost}</td>
                 <td style={{ color: "#468481" }}>{item.take_profit}</td>
+                <td style={{ color: "#468481" }}>{item.start_price}</td>
+                <td style={{ color: "#468481" }}>{item.end_price}</td>
+
                 <td>{format(new Date(item.time_open), "HH:mm:ss")}</td>
                 <td>{format(new Date(item.time_close), "HH:mm:ss")}</td>
                 <td style={{ textAlign: "left" }}>

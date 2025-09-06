@@ -50,6 +50,10 @@ function Sidebar({ show }) {
                 </Link>
               </li>
               <li>
+                <Link to={`/size-calculator`}>Size Calculator</Link>
+              </li>
+              <br />
+              <li>
                 <Link to={`/trend-analize`}>Trend analize</Link>
               </li>
               <br />
